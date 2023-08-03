@@ -1,21 +1,25 @@
 from django.contrib import admin
+from django import forms
 from .models import User, Platform, Accounts
 from django.shortcuts import get_object_or_404
-# Register your models here.
 
-class ManageUser(admin.ModelAdmin):
+# Register your models here.
+class UserForm():
+    pass
+
+class UserAdmin(admin.ModelAdmin):
     list_display =  ["id","first_name", "last_name","user_name", "password"]
     fields = ["first_name","last_name"]
 
-class ManagePlatform(admin.ModelAdmin):
+
+class PlatformAdmin(admin.ModelAdmin):
     list_display =  ["id","platform_name", "platform_link", "accounts_created_on_platform"]
 
     def accounts_created_on_platform(self,platform_id):
         return Accounts.objects.filter(platform=platform_id).count()
          
 
-
-class ManagerAccount(admin.ModelAdmin):
+class AccountAdmin(admin.ModelAdmin):
     list_display =  ["id","platform", "user"]
 
     def format_user_name(self):# shows first name - last name  (id) in user column
@@ -28,6 +32,6 @@ class ManagerAccount(admin.ModelAdmin):
         pass
 
 
-admin.site.register(User, ManageUser)
-admin.site.register(Platform, ManagePlatform)
-admin.site.register(Accounts, ManagerAccount)
+admin.site.register(User, UserAdmin)
+admin.site.register(Platform, PlatformAdmin)
+admin.site.register(Accounts, AccountAdmin)
