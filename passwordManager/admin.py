@@ -4,9 +4,6 @@ from .models import User, Platform, Account
 from django.shortcuts import get_object_or_404
 
 # Register your models here.
-class UserForm():
-    pass
-
 class UserAdmin(admin.ModelAdmin):
     list_display =  ["id","first_name", "last_name","user_name", "password"]
     fields = ["first_name","last_name"]
@@ -29,8 +26,8 @@ class PlatformAdmin(admin.ModelAdmin):
 class AccountAdmin(admin.ModelAdmin):
     list_display =  ["id","platform", "user"]
 
-    def format_user_name(self):# shows first name - last name  (id) in user column
-        
+    def format_user_name(self, pk):# shows first name - last name  (id) in user column
+  
         first_name = get_object_or_404(User, pk = id)["first_name"]
         last_name = get_object_or_404(User, pk =id)["last_name"]
         return ("%s %s (%d)" % first_name % last_name % id)

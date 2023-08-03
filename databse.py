@@ -1,2 +1,0 @@
-cur.execute("create table users( userId int unique not null primary key, firstName varchar(255) not null,lastName varchar(255) not null,userName varchar(255) unique not null ,password varchar(255) not null
-)")
