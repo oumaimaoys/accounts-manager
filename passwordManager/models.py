@@ -40,7 +40,7 @@ class User(models.Model):
             raise ValueError("You entered the wrong password")
 
     def create_user(self):
-        new_password = self.generate_password-()
+        new_password = self.generate_password()
         hashed_password  = self.hash_pasword(new_password)
         user_name = self.first_name + "." + self.last_name
         return {"password":hashed_password, "user_name":user_name}
@@ -52,7 +52,7 @@ class Platform(models.Model):
     platform_link = models.CharField(max_length=255)
 
 
-class Accounts(models.Model):
+class Account(models.Model):
     platform = models.ForeignKey(Platform, on_delete=models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
 
