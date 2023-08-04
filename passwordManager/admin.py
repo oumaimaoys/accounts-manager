@@ -1,15 +1,15 @@
 from django.contrib import admin
 from .models import User, Platform, Account, UserForm
 from django.shortcuts import get_object_or_404
-
+from  django.utils.html import format_html
 
 
 # Register your models here.
 class UserAdmin(admin.ModelAdmin):
-    list_display =  ["id","first_name", "last_name","user_name", "password"]
+    list_display =  ["id","first_name", "last_name","user_name", "password", "change_button","delete_button"]
     search_fields = ["first_name__startswith", "last_name__startswith"]
     form = UserForm
-
+    
     def save_form(self, request, form, change):
         # Do some custom logic before saving the form.
         user = form.save(commit=False)  # Get the User object from the form without saving it yet.
@@ -22,6 +22,12 @@ class UserAdmin(admin.ModelAdmin):
         form.instance.password = new_password
 
         return super().save_form(request, form, change)
+    
+    def change_button(self, obj):
+        return format_html('<center><a class="btn" href="/admin/passwordManager/user/{}/change/">Change</a></center>', obj.id)
+
+    def delete_button(self, obj):
+        return format_html('<center><a class="btn" href="/admin/passwordManager/user/{}/delete/">Delete</a></center>', obj.id)
     
 
 

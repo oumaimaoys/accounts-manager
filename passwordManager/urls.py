@@ -3,7 +3,7 @@ from django.contrib import admin
 
 
 urlpatterns = [
-    
+ 
 ]
 admin.site.site_header  =  "Credentials Manager"  
 admin.site.site_title  =  "Credentials Manager"

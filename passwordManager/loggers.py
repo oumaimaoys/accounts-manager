@@ -22,4 +22,5 @@ class Logger(): #an abstract logger
 
 class GitlabLogger(Logger):
     platform_api_token = "glpat-wtAzNm4yqvrwGmDUsXGc"
-    platform_api_url = "https://gitlab.example.com/" # make sure ot change this later
+    platform_api_url = "https://gitlab.com/" # make sure ot change this later
+    
