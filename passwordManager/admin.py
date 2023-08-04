@@ -1,39 +1,42 @@
 from django.contrib import admin
-from django import forms
-from .models import User, Platform, Account
+from .models import User, Platform, Account, UserForm
 from django.shortcuts import get_object_or_404
+
+
 
 # Register your models here.
 class UserAdmin(admin.ModelAdmin):
     list_display =  ["id","first_name", "last_name","user_name", "password"]
-    fields = ["first_name","last_name"]
+    search_fields = ["first_name__startswith", "last_name__startswith"]
+    form = UserForm
 
-    def get_form(self, request, obj=None, **kwargs):
-        # Get the default form.
-        form = super().get_form(request, obj, **kwargs)
+    def save_form(self, request, form, change):
+        # Do some custom logic before saving the form.
+        user = form.save(commit=False)  # Get the User object from the form without saving it yet.
+        create_user = user.create_user(user.first_name.lower(),user.last_name.lower())
+        user_name = create_user["user_name"]
+        new_password = create_user["password"]
 
+        # Assign the generated values to the form fields
+        form.instance.user_name = user_name
+        form.instance.password = new_password
 
-        return form
+        return super().save_form(request, form, change)
+    
 
 
 class PlatformAdmin(admin.ModelAdmin):
     list_display =  ["id","platform_name", "platform_link", "accounts_created_on_platform"]
-
+    search_fields = ["platform_name__startswith"]
     def accounts_created_on_platform(self,platform_id):
         return Account.objects.filter(platform=platform_id).count()
+    
+    accounts_created_on_platform.short_description = "accounts"
          
 
 class AccountAdmin(admin.ModelAdmin):
     list_display =  ["id","platform", "user"]
 
-    def format_user_name(self, pk):# shows first name - last name  (id) in user column
-  
-        first_name = get_object_or_404(User, pk = id)["first_name"]
-        last_name = get_object_or_404(User, pk =id)["last_name"]
-        return ("%s %s (%d)" % first_name % last_name % id)
-
-    def format_platform_name(): # shows platformName (id) in platform column
-        pass
 
 
 admin.site.register(User, UserAdmin)

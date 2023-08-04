@@ -1,4 +1,6 @@
 from django.db import models
+from django import forms
+from django.forms import ModelForm
 import random
 import string
 import bcrypt
@@ -10,6 +12,9 @@ class User(models.Model):
     user_name = models.CharField(max_length=255) # might change this to platform table instead
     # email 
     password = models.CharField(max_length=255) # hashed password
+
+    def __str__(self) -> str:
+        return "{} {} (id={})".format(self.first_name, self.last_name, self.pk)
 
     def generate_password(self, password_length): #autogenerates credentials
         password = []
@@ -39,22 +44,35 @@ class User(models.Model):
         else :
             raise ValueError("You entered the wrong password")
 
-    def create_user(self):
-        new_password = self.generate_password()
+    def create_user(self, first_name, last_name):
+        new_password = self.generate_password(20)
         hashed_password  = self.hash_pasword(new_password)
-        user_name = self.first_name + "." + self.last_name
+        user_name = first_name + "." + last_name
         return {"password":hashed_password, "user_name":user_name}
+    
 
 
+class UserForm(ModelForm):
+    class Meta:
+        model = User
+        fields= ["first_name", "last_name"]
+        widgets = {'user_name': forms.HiddenInput(), 'password':forms.HiddenInput()}
+   
+         
+       
 
 class Platform(models.Model):
     platform_name = models.CharField(max_length=255)
     platform_link = models.CharField(max_length=255)
 
+    def __str__(self) -> str:
+        return "{}".format(self.platform_name)
+
 
 class Account(models.Model):
     platform = models.ForeignKey(Platform, on_delete=models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
+
 
 
 """class Admins(models.Model):
