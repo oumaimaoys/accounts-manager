@@ -32,16 +32,32 @@ class UserAdmin(admin.ModelAdmin):
 
 
 class PlatformAdmin(admin.ModelAdmin):
-    list_display =  ["id","platform_name", "platform_link", "accounts_created_on_platform"]
+    list_display =  ["id","platform_name", "platform_link", "accounts_created_on_platform","change_button","delete_button"]
     search_fields = ["platform_name__startswith"]
     def accounts_created_on_platform(self,platform_id):
         return Account.objects.filter(platform=platform_id).count()
     
     accounts_created_on_platform.short_description = "accounts"
+
+    def change_button(self, obj):
+        return format_html('<a class="btn" href="/admin/passwordManager/platform/{}/change/">Change</a>', obj.id)
+
+    def delete_button(self, obj):
+        return format_html('<a class="btn" href="/admin/passwordManager/platform/{}/delete/">Delete</a>', obj.id)
+    
+
          
 
 class AccountAdmin(admin.ModelAdmin):
-    list_display =  ["id","platform", "user"]
+    list_display =  ["id","platform", "user","change_button","delete_button"]
+
+    def change_button(self, obj):
+        return format_html('<a class="btn" href="/admin/passwordManager/account/{}/change/">Change</a>', obj.id)
+
+    def delete_button(self, obj):
+        return format_html('<a class="btn" href="/admin/passwordManager/account/{}/delete/">Delete</a>', obj.id)
+    
+
 
 
 
