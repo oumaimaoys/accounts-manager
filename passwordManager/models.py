@@ -1,6 +1,7 @@
 from django.db import models
 from django import forms
 from django.forms import ModelForm
+
 import random
 import string
 import bcrypt
@@ -53,10 +54,19 @@ class User(models.Model):
 
 
 class UserForm(ModelForm):
+   
+    platforms = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(), queryset=User.objects.all())
+    fieldsets = [
+        ( "persoanl info", {'fields':["first_name", "last_name"]}),
+        ("platfroms", {'fields':["platforms"]})
+    ]
+    
+    your_checkbox = forms.BooleanField(required = False,label = 'your_checkbox')
     class Meta:
         model = User
-        fields= ["first_name", "last_name"]
+        fields= '__all__'
         widgets = {'user_name': forms.HiddenInput(), 'password':forms.HiddenInput()}
+
    
          
        

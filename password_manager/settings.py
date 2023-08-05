@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'passwordManager.apps.PasswordmanagerConfig',
+    'forms_fieldset',
 ]
 
 MIDDLEWARE = [

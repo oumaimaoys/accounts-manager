@@ -9,6 +9,7 @@ class UserAdmin(admin.ModelAdmin):
     list_display =  ["id","first_name", "last_name","user_name", "password", "change_button","delete_button"]
     search_fields = ["first_name__startswith", "last_name__startswith"]
     form = UserForm
+    paltform = Platform
     
     def save_form(self, request, form, change):
         # Do some custom logic before saving the form.
