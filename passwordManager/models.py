@@ -82,25 +82,24 @@ class Token(models.Model):
 # model Forms
 
 class UserForm(ModelForm):
-    platforms = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(), queryset=Platform.objects.all())
-    select_all_checkbox = forms.BooleanField(required = False,label = 'Select all platforms')
-
     class Meta:
         model = User
-        fields= '__all__'
+        fields= ["first_name", "last_name"]
         widgets = {'user_name': forms.HiddenInput(), 'password':forms.HiddenInput()}
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        if 'instance' in kwargs and kwargs['instance']:
-            # Check the 'your_checkbox' if all platforms are selected for an existing user
-            selected_platforms = kwargs['instance'].platforms.all()
-            self.fields['your_checkbox'].initial = set(selected_platforms) == set(self.fields['platforms'].queryset)
 
-    def select_all_platforms():
+class AccountForm(ModelForm):
+    platforms = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(), queryset=Platform.objects.all())
+    #select_all_checkbox = forms.BooleanField(required = False,label = 'Select all platforms')
+
+    class Meta:
+        model : Account
+        fields = ["user", "platforms"]
+        widgets = {'platform' : forms.HiddenInput()}
+    
+
+    def select_all_platforms(): # this might get done in js instead
         pass
 
     def clean_all_platforms():
         pass
-
-   

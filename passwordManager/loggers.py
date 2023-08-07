@@ -21,21 +21,19 @@ class Logger(): #an abstract logger
 
 
 class GitlabLogger(Logger):
-    platform_api_token = "glpat-UP8JuX_AnW5LYD-baBzr"
-    platform_api_url = "https://gitlab.com/" # make sure ot change this later
-
-
-    gl = gitlab.Gitlab(private_token=platform_api_token)
+    platform_api_token = "uPSVENLpMwJdC3sRLfJN"
+    platform_api_url = 'https://gitlab.sys.infodat.com'
 
     # create account
     def create_user(self):
-        gl = gitlab.Gitlab(private_token=self.platform_api_token)
-        user_data = {'email': 'capswarlock@gmail.com', 'username': 'mohamed.hilali', 'name': 'mohamedhilali ','password':'pASSword2433__'}
-        #user = gl.users.create(user_data)
-        access_token = gl.groups.get(71022580).access_tokens.create({"name": "test", "scopes": ["api"],"expires_at" : "2023-09-01",})
-        print( access_token)
-    # addd user to group
-    # grant access to user 
+        gl = gitlab.Gitlab(url=self.platform_api_url, private_token=self.platform_api_token)
+        user_data = {'email': 'user_test@exxpress.ma', 'username': 'user_test', 'name': 'user test','password':'Agadir414$'}
+        #user = gl.users.create(user_data) # create new user
+        #gl.users.delete(id=)
+        #print(gl.users.list())
+
+    
+    
 
 new = GitlabLogger()
 

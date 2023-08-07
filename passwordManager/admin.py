@@ -1,6 +1,6 @@
+from typing import Any
 from django.contrib import admin
-from .models import User, Platform, Account, UserForm
-from django.shortcuts import get_object_or_404
+from .models import User, Platform, Account, UserForm, AccountForm
 from  django.utils.html import format_html
 
 
@@ -9,7 +9,6 @@ class UserAdmin(admin.ModelAdmin):
     list_display =  ["id","first_name", "last_name","user_name", "password", "change_button","delete_button"]
     search_fields = ["first_name__startswith", "last_name__startswith"]
     form = UserForm
-    paltform = Platform
     
     def save_form(self, request, form, change):
         # Do some custom logic before saving the form.
@@ -29,7 +28,6 @@ class UserAdmin(admin.ModelAdmin):
 
     def delete_button(self, obj):
         return format_html('<center><a class="btn" href="/admin/passwordManager/user/{}/delete/">Delete</a></center>', obj.id)
-    
 
 
 class PlatformAdmin(admin.ModelAdmin):
@@ -51,6 +49,7 @@ class PlatformAdmin(admin.ModelAdmin):
 
 class AccountAdmin(admin.ModelAdmin):
     list_display =  ["id","platform", "user","change_button","delete_button"]
+    form = AccountForm
 
     def change_button(self, obj):
         return format_html('<a class="btn" href="/admin/passwordManager/account/{}/change/">Change</a>', obj.id)
@@ -58,10 +57,12 @@ class AccountAdmin(admin.ModelAdmin):
     def delete_button(self, obj):
         return format_html('<a class="btn" href="/admin/passwordManager/account/{}/delete/">Delete</a>', obj.id)
     
+    def save_form(self, request: Any, form: Any, change: Any) -> Any:
+        for p in form.cleaned_data["platforms"]:
+            account = form.save(commit=False)
+            form.instance.platform =  p
 
-
-
-
+        
 admin.site.register(User, UserAdmin)
 admin.site.register(Platform, PlatformAdmin)
 admin.site.register(Account, AccountAdmin)
