@@ -1,10 +1,10 @@
 from django.db import models
 from django import forms
 from django.forms import ModelForm
-
 import random
 import string
 import bcrypt
+import forms_fieldset 
 
 # Create your models here.
 class User(models.Model):
@@ -52,25 +52,6 @@ class User(models.Model):
         return {"password":hashed_password, "user_name":user_name}
     
 
-
-class UserForm(ModelForm):
-   
-    platforms = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(), queryset=User.objects.all())
-    fieldsets = [
-        ( "persoanl info", {'fields':["first_name", "last_name"]}),
-        ("platfroms", {'fields':["platforms"]})
-    ]
-    
-    your_checkbox = forms.BooleanField(required = False,label = 'your_checkbox')
-    class Meta:
-        model = User
-        fields= '__all__'
-        widgets = {'user_name': forms.HiddenInput(), 'password':forms.HiddenInput()}
-
-   
-         
-       
-
 class Platform(models.Model):
     platform_name = models.CharField(max_length=255)
     platform_link = models.CharField(max_length=255)
@@ -85,5 +66,41 @@ class Account(models.Model):
 
 
 
-"""class Admins(models.Model):
-    pass"""
+class Admin(models.Model):
+    admin_first_name = models.CharField(max_length=250)
+    admin_last_name = models.CharField(max_length=250)
+    admin_user_name = models.CharField(max_length=250)
+    #email
+    #password
+
+class Token(models.Model):
+    admin = models.ForeignKey(Admin, on_delete=models.CASCADE)
+    platform = models.ForeignKey(Platform, on_delete=models.CASCADE)
+    instance_url = models.CharField(max_length=255)
+    token = models.CharField(max_length=250)
+
+# model Forms
+
+class UserForm(ModelForm):
+    platforms = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(), queryset=Platform.objects.all())
+    select_all_checkbox = forms.BooleanField(required = False,label = 'Select all platforms')
+
+    class Meta:
+        model = User
+        fields= '__all__'
+        widgets = {'user_name': forms.HiddenInput(), 'password':forms.HiddenInput()}
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if 'instance' in kwargs and kwargs['instance']:
+            # Check the 'your_checkbox' if all platforms are selected for an existing user
+            selected_platforms = kwargs['instance'].platforms.all()
+            self.fields['your_checkbox'].initial = set(selected_platforms) == set(self.fields['platforms'].queryset)
+
+    def select_all_platforms():
+        pass
+
+    def clean_all_platforms():
+        pass
+
+   
