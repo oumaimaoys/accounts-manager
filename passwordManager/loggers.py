@@ -1,7 +1,7 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-import mattermost
+from mattermostdriver import driver
 import gitlab
 
 
@@ -61,6 +61,8 @@ class MinioLogger(Logger):
 class MatterMostLogger(Logger):
     def __init__(self) -> None:
         super().__init__()
+        self.drivar = driver
+        
 
     def create_user(self):
         pass
@@ -73,6 +75,6 @@ class MatterMostLogger(Logger):
 
     
     
-
-new = GitlabLogger("uPSVENLpMwJdC3sRLfJN",'http://gitlab.sys.infodat.com')
+gitlab = GitlabLogger("uPSVENLpMwJdC3sRLfJN",'http://gitlab.sys.infodat.com')
+mattermost = MatterMostLogger("", "https://mattermost.sys.infodat.com/")
 

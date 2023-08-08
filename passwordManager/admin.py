@@ -32,8 +32,9 @@ class UserAdmin(admin.ModelAdmin):
 
 
 class PlatformAdmin(admin.ModelAdmin):
-    list_display =  ["id","platform_name", "platform_link", "accounts_created_on_platform","change_button","delete_button"]
+    list_display =  ["id","platform_name", "platform_link", "accounts_created_on_platform","token","instance_url","change_button","delete_button"]
     search_fields = ["platform_name__startswith"]
+
     def accounts_created_on_platform(self,platform_id):
         return Account.objects.filter(platform=platform_id).count()
     
@@ -49,7 +50,7 @@ class PlatformAdmin(admin.ModelAdmin):
          
 
 class AccountAdmin(admin.ModelAdmin):
-    list_display =  ["id","platform", "user","change_button","delete_button"]
+    list_display =  ["id","platform", "user","status","delete_button"]
     form = AccountForm
     formset = formset_factory(form=AccountForm, extra=3)
 
@@ -60,23 +61,12 @@ class AccountAdmin(admin.ModelAdmin):
         return format_html('<a class="btn" href="/admin/passwordManager/account/{}/delete/">Delete</a>', obj.id)
     
     def save_form(self, request: Any, form: Any, change: Any) -> Any:  
-        platforms = form.cleaned_data["platforms"]
+        platforms = form.cleaned_data['platforms']
         if platforms:
-            accounts_to_save = []
-            for platform in platforms:
-                account = form.save(commit=False)
-                account.platform = platform
-                accounts_to_save.append(account)
-            
-        # bulk_create to save all instances at once
-            Account.objects.bulk_create(accounts_to_save)
-        else:
-            return 
+            for p in platforms[:len(platforms)-1]:
+                Account.objects.create( platform= p ,user=form.cleaned_data['user'])
+            form.instance.platform = platforms[len(platforms)-1]
         return super().save_form(request, form, change)
-    
-    def save_formset(self, request: Any, form: Any, formset: Any, change: Any) -> None:
-
-        return super().save_formset(request, form, formset, change)
     
 
 

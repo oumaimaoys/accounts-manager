@@ -12,6 +12,7 @@ class User(models.Model):
     last_name = models.CharField(max_length=255)
     user_name = models.CharField(max_length=255) # might change this to platform table instead
     # email 
+    # 
     password = models.CharField(max_length=255) # hashed password
 
     def __str__(self) -> str:
@@ -54,7 +55,9 @@ class User(models.Model):
 
 class Platform(models.Model):
     platform_name = models.CharField(max_length=255)
-    platform_link = models.CharField(max_length=255)
+    platform_link = models.URLField(max_length=200)
+    instance_url = models.URLField(max_length=200, default = None, blank=True )
+    token = models.CharField(max_length=250, default=None, blank=True)
 
     def __str__(self) -> str:
         return "{}".format(self.platform_name)
@@ -63,22 +66,10 @@ class Platform(models.Model):
 class Account(models.Model):
     platform = models.ForeignKey(Platform, on_delete=models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
+    status = models.BooleanField(default=True)
 
-
-
-class Admin(models.Model):
-    admin_first_name = models.CharField(max_length=250)
-    admin_last_name = models.CharField(max_length=250)
-    admin_user_name = models.CharField(max_length=250)
-    #email
-    #password
-
-class Token(models.Model):
-    admin = models.ForeignKey(Admin, on_delete=models.CASCADE)
-    platform = models.ForeignKey(Platform, on_delete=models.CASCADE)
-    instance_url = models.CharField(max_length=255)
-    token = models.CharField(max_length=250)
-
+    def account_already_exists(self):
+        pass
 # model Forms
 
 class UserForm(ModelForm):
@@ -103,3 +94,5 @@ class AccountForm(ModelForm):
 
     def clean_all_platforms():
         pass
+
+    
