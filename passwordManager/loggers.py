@@ -62,7 +62,6 @@ class MatterMostLogger(Logger):
     def __init__(self) -> None:
         super().__init__()
         self.drivar = driver
-        
 
     def create_user(self):
         pass
@@ -71,9 +70,6 @@ class MatterMostLogger(Logger):
     def view_users(self):
         pass
 
-
-
-    
     
 gitlab = GitlabLogger("uPSVENLpMwJdC3sRLfJN",'http://gitlab.sys.infodat.com')
 mattermost = MatterMostLogger("", "https://mattermost.sys.infodat.com/")
