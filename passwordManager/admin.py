@@ -2,6 +2,7 @@ from typing import Any
 from django.contrib import admin
 from .models import User, Platform, Account, UserForm, AccountForm
 from  django.utils.html import format_html
+from django.forms import formset_factory
 
 
 # Register your models here.
@@ -50,6 +51,7 @@ class PlatformAdmin(admin.ModelAdmin):
 class AccountAdmin(admin.ModelAdmin):
     list_display =  ["id","platform", "user","change_button","delete_button"]
     form = AccountForm
+    formset = formset_factory(form=AccountForm, extra=3)
 
     def change_button(self, obj):
         return format_html('<a class="btn" href="/admin/passwordManager/account/{}/change/">Change</a>', obj.id)
@@ -57,12 +59,27 @@ class AccountAdmin(admin.ModelAdmin):
     def delete_button(self, obj):
         return format_html('<a class="btn" href="/admin/passwordManager/account/{}/delete/">Delete</a>', obj.id)
     
-    def save_form(self, request: Any, form: Any, change: Any) -> Any:
-        for p in form.cleaned_data["platforms"]:
-            account = form.save(commit=False)
-            form.instance.platform =  p
+    def save_form(self, request: Any, form: Any, change: Any) -> Any:  
+        platforms = form.cleaned_data["platforms"]
+        if platforms:
+            accounts_to_save = []
+            for platform in platforms:
+                account = form.save(commit=False)
+                account.platform = platform
+                accounts_to_save.append(account)
+            
+        # bulk_create to save all instances at once
+            Account.objects.bulk_create(accounts_to_save)
+        else:
+            return 
+        return super().save_form(request, form, change)
+    
+    def save_formset(self, request: Any, form: Any, formset: Any, change: Any) -> None:
 
-        
+        return super().save_formset(request, form, formset, change)
+    
+
+
 admin.site.register(User, UserAdmin)
 admin.site.register(Platform, PlatformAdmin)
 admin.site.register(Account, AccountAdmin)

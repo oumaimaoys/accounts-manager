@@ -12,29 +12,44 @@ class Logger(): #an abstract logger
     platform_api_token = ""
     platform_sign_up_url = ""
 
-
-    def create_account_with_scrapper(self):
-        pass
-
     def create_account_with_api(self):
         pass
 
 
 class GitlabLogger(Logger):
-    platform_api_token = "uPSVENLpMwJdC3sRLfJN"
-    platform_api_url = 'https://gitlab.sys.infodat.com'
+    def __init__(self, token, url):
+        super().__init__()
+        self.platform_api_token = token
+        self.platform_api_url = url
+        self.gl = gitlab.Gitlab(url=self.platform_api_url, private_token=self.platform_api_token)
 
     # create account
     def create_user(self):
-        gl = gitlab.Gitlab(url=self.platform_api_url, private_token=self.platform_api_token)
         user_data = {'email': 'user_test@exxpress.ma', 'username': 'user_test', 'name': 'user test','password':'Agadir414$'}
-        #user = gl.users.create(user_data) # create new user
-        #gl.users.delete(id=)
-        #print(gl.users.list())
+        user = gl.users.create(user_data) 
+        #gl.users.delete(id=24)
+       
 
+    def remove_user(self, user_id, user_name): # blocking them
+        if user_id:
+            user = self.gl.users.get(user_id) # by id       
+        elif user_name:
+            user = self.gl.users.list(username=user_name)[0]
+        else:
+            raise ValueError
+        user.block()
+
+    def update_user(self):
+        pass
+
+    def view_users(self):
+        return self.gl.users.list(get_all=True)
+
+class MinioLogger(Logger):
+    pass
     
     
 
-new = GitlabLogger()
+new = GitlabLogger("uPSVENLpMwJdC3sRLfJN",'http://gitlab.sys.infodat.com')
 
-new.create_user()
+print(new.view_users())
