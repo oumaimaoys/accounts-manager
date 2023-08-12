@@ -29,3 +29,16 @@ def authenticatePassword(password, hashedpassword):
         raise ValueError("You entered the wrong password")
     
 print(authenticatePassword(password, hashedpassword))
+
+    
+def hash_pasword(self, password):
+    password = password.encode('utf-8')
+    hashed_password = bcrypt.hashpw(password, bcrypt.gensalt())
+    return hashed_password
+
+def authenticate_password(self, input_password, hashed_password):
+    password = input_password.encode('utf-8')
+    if bcrypt.checkpw(password, hashed_password):
+        return True
+    else :
+        raise ValueError("You entered the wrong password")

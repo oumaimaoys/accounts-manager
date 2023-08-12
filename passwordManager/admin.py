@@ -1,13 +1,19 @@
-from typing import Any
-from django.contrib import admin
+from typing import Any, Optional
+from django.contrib import admin, messages
+from django.db.models.fields import Field
+from django.db.models.fields.related import ForeignKey, ManyToManyField
+from django.forms.fields import TypedChoiceField
+from django.forms.models import ModelChoiceField, ModelMultipleChoiceField
+from django.http.request import HttpRequest
+from django.http.response import HttpResponse
 from .models import User, Platform, Account, UserForm, AccountForm
 from  django.utils.html import format_html
-from django.forms import formset_factory
+from django.db.models  import Subquery
 
 
 # Register your models here.
 class UserAdmin(admin.ModelAdmin):
-    list_display =  ["id","first_name", "last_name","user_name", "password", "change_button","delete_button"]
+    list_display =  ["id","first_name", "last_name","user_name", "change_button","delete_button"]
     search_fields = ["first_name__startswith", "last_name__startswith"]
     form = UserForm
     
@@ -52,7 +58,6 @@ class PlatformAdmin(admin.ModelAdmin):
 class AccountAdmin(admin.ModelAdmin):
     list_display =  ["id","platform", "user","status","delete_button"]
     form = AccountForm
-    formset = formset_factory(form=AccountForm, extra=3)
 
     def change_button(self, obj):
         return format_html('<a class="btn" href="/admin/passwordManager/account/{}/change/">Change</a>', obj.id)
@@ -62,14 +67,24 @@ class AccountAdmin(admin.ModelAdmin):
     
     def save_form(self, request: Any, form: Any, change: Any) -> Any:  
         platforms = form.cleaned_data['platforms']
+        user = form.cleaned_data['user']
         if platforms:
             for p in platforms[:len(platforms)-1]:
-                Account.objects.create( platform= p ,user=form.cleaned_data['user'])
-            form.instance.platform = platforms[len(platforms)-1]
+                Account.objects.create( platform= p ,user= user)
+            form.instance.platform = platforms[len(platforms)-1]  
         return super().save_form(request, form, change)
     
+    def formfield_for_foreignkey(self, db_field, request, **kwargs) -> TypedChoiceField:
+        if db_field.name == 'user':  
+            Platform_count = Platform.objects.all().count()
+            existing_user_ids = Account.objects.values_list('user')
+            if existing_user_ids.count() == Platform_count:
+                kwargs['queryset'] = User.objects.exclude(pk__in=Subquery(existing_user_ids))
+        return super().formfield_for_choice_field(db_field, request, **kwargs)
+    
 
-
+    
+    
 admin.site.register(User, UserAdmin)
 admin.site.register(Platform, PlatformAdmin)
 admin.site.register(Account, AccountAdmin)
