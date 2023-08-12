@@ -1,6 +1,7 @@
 from mattermostdriver import Driver
 import gitlab
 from minio import Minio
+from harborapi import HarborAsyncClient
 
 # an abstract class that has abstract methods for an abstract platform
 
@@ -9,7 +10,7 @@ class Logger(): #an abstract logger
         self.platform_api_token = token
         self.platform_api_url = url
 
-        def create_user( email, user_name, name, password):
+        def create_user(self.email, user_name, name, password):
             #here we validate the data
             pass
 
@@ -87,17 +88,23 @@ class MinioLogger(Logger):
 class HarborLogger(Logger):
     def __init__(self) -> None:
         super().__init__()
+        self.client = HarborAsyncClient(url=self.platform_api_url,basicauth=self.platform_api_token )
 
-    def create_user(self):
-        pass
+    def create_user(self,email, user_name, name, password):
+        user_data = {'email': email, 'username': user_name,'password':password}
+        user = self.client.create_user(user_data)
+        return(user)
+
     def rmeove_user(self):
         pass
     def view_users(self):
-        pass
+        return self.client.get_users()
 
-    
+# for testing   : delete later
 gitlab = GitlabLogger("uPSVENLpMwJdC3sRLfJN",'http://gitlab.sys.infodat.com')
 mattermost = MatterMostLogger("", "https://mattermost.sys.infodat.com/")
+harbor = HarborLogger("","")
 
 #gitlab.create_user(email= 'user_test@exxpress.ma',user_name='user_test',name='user test',password='Agadir414$')
-mattermost.create_user(email= 'user_test@exxpress.ma',user_name='user_test',password='Agadir414$')
+print(mattermost.create_user(email= 'user_test@exxpress.ma',user_name='user_test',password='Agadir414$'))
+print(harbor.create_user(email= 'user_test@exxpress.ma',user_name='user_test',password='Agadir414$'))
