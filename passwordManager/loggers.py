@@ -6,13 +6,15 @@ from harborapi import HarborAsyncClient
 # an abstract class that has abstract methods for an abstract platform
 
 class Logger(): #an abstract logger
-    def __init__(self, token, url):
+    def __init__(self, token, url, id, password):
         self.platform_api_token = token
         self.platform_api_url = url
+        self.login_id = id
+        self.password = password
 
-        def create_user(self.email, user_name, name, password):
-            #here we validate the data
-            pass
+    def create_user(self,email, user_name, name, password):
+        #here we validate the data
+        pass
 
 
 class GitlabLogger(Logger):
@@ -53,10 +55,10 @@ class GitlabLogger(Logger):
 
 
 class MatterMostLogger(Logger):
-    def __init__(self) -> None:
-        super().__init__()
-        self.drivar = Driver({'url':self.platform_api_url,'token':self.platform_api_token})
-        self.drivar.login()
+    def __init__(self,token, url, id, password):
+        super().__init__(token, url, id, password)
+        self.driver = Driver({'url':self.platform_api_url,'login_id': self.login_id,'password': self.password})
+        self.driver.login()
 
     def create_user(self, email, user_name, password):
         super()
@@ -68,26 +70,26 @@ class MatterMostLogger(Logger):
             return "user creation failed"
     
     def rmeove_user(self,id):
-        return self.drivar.users.deactivate_user(id)
+        return self.driver.users.deactivate_user(id)
     
     def view_users(self):
-        return self.drivar.users.get_users()
+        return self.driver.users.get_users()
 
 
 class MinioLogger(Logger):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self,token, url, id, password) -> None:
+        super().__init__(token, url, id, password)
 
     def create_user(self):
         pass
-    def rmeove_user(self):
+    def remove_user(self):
         pass
     def view_users(self):
         pass
 
 class HarborLogger(Logger):
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self,token, url, id, password) -> None:
+        super().__init__(token, url, id, password)
         self.client = HarborAsyncClient(url=self.platform_api_url,basicauth=self.platform_api_token )
 
     def create_user(self,email, user_name, name, password):
@@ -101,10 +103,11 @@ class HarborLogger(Logger):
         return self.client.get_users()
 
 # for testing   : delete later
-gitlab = GitlabLogger("uPSVENLpMwJdC3sRLfJN",'http://gitlab.sys.infodat.com')
-mattermost = MatterMostLogger("", "https://mattermost.sys.infodat.com/")
-harbor = HarborLogger("","")
+#gitlab = GitlabLogger("uPSVENLpMwJdC3sRLfJN",'http://gitlab.sys.infodat.com')
+mattermost = MatterMostLogger(token ="",id="newuser",password="Agadir414$" , url = "https://mattermost.sys.infodat.com")
+#harbor = HarborLogger("","")
 
 #gitlab.create_user(email= 'user_test@exxpress.ma',user_name='user_test',name='user test',password='Agadir414$')
-print(mattermost.create_user(email= 'user_test@exxpress.ma',user_name='user_test',password='Agadir414$'))
-print(harbor.create_user(email= 'user_test@exxpress.ma',user_name='user_test',password='Agadir414$'))
+print(mattermost.view_users())
+#print(mattermost.create_user(email= 'user_test@exxpress.ma',user_name='user_test',password='Agadir414$'))
+#print(harbor.create_user(email= 'user_test@exxpress.ma',user_name='user_test',password='Agadir414$'))

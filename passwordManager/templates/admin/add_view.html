@@ -1,0 +1,13 @@
+{% extends "admin/add_form.html" %}
+
+<form method='POST' class="main_form">
+    {% csrf_token %}
+    <fieldset class="user">
+        {{form.user}}
+    </fieldset>
+    <fieldset class="platfroms">
+        {{form.platforms}}
+       
+    </fieldset>
+</form>
+<script src="{% static 'js/add_view.js' %}"></script>

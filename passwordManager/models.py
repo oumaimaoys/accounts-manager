@@ -9,7 +9,7 @@ class User(models.Model):
     last_name = models.CharField(max_length=255)
     user_name = models.CharField(max_length=255) # might change this to platform table instead
     # email 
-    password = models.CharField(max_length=255) # hashed password
+    password = models.CharField(max_length=255) 
 
     def __str__(self) -> str:
         return "{} {} (id={})".format(self.first_name, self.last_name, self.pk)

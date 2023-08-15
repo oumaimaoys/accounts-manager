@@ -21,4 +21,5 @@ from django.urls import path, include
 urlpatterns = [
     path("passwordManager/", include("passwordManager.urls")),
     path('admin/', admin.site.urls),
+ path("__debug__/", include("debug_toolbar.urls")),
 ]

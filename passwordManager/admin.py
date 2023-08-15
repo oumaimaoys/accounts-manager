@@ -18,12 +18,10 @@ class UserAdmin(admin.ModelAdmin):
     form = UserForm
     
     def save_form(self, request, form, change):
-        # Do some custom logic before saving the form.
         user = form.save(commit=False)  # Get the User object from the form without saving it yet.
         create_user = user.create_user(user.first_name.lower(),user.last_name.lower())
         user_name = create_user["user_name"]
         new_password = create_user["password"]
-
         # Assign the generated values to the form fields
         form.instance.user_name = user_name
         form.instance.password = new_password
