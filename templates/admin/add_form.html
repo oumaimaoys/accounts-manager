@@ -1,0 +1,18 @@
+{% extends "\venv\Lib\site-packages\django\contrib\admin\templates\admin\auth\user\add_form.html" %}
+
+{% block content %}
+    <form method='post' class="main_form">
+        {% csrf_token %}
+        <fieldset class="user">
+            {{form.user}}
+        </fieldset>
+        <fieldset class="platforms">
+            {{form.platforms}}
+        </fieldset>
+        <fieldset class="extra">
+            <input type="text"class ="input" value="eee">
+        </fieldset>
+    </form>
+<script src="{% static 'js/add_view.js' %}"></script>
+
+{% endblock %}

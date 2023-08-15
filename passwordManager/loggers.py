@@ -57,7 +57,7 @@ class GitlabLogger(Logger):
 class MatterMostLogger(Logger):
     def __init__(self,token, url, id, password):
         super().__init__(token, url, id, password)
-        self.driver = Driver({'url':self.platform_api_url,'login_id': self.login_id,'password': self.password})
+        self.driver = Driver({'url':self.platform_api_url, 'token':self.platform_api_token})
         self.driver.login()
 
     def create_user(self, email, user_name, password):
@@ -104,7 +104,7 @@ class HarborLogger(Logger):
 
 # for testing   : delete later
 #gitlab = GitlabLogger("uPSVENLpMwJdC3sRLfJN",'http://gitlab.sys.infodat.com')
-mattermost = MatterMostLogger(token ="",id="newuser",password="Agadir414$" , url = "https://mattermost.sys.infodat.com")
+mattermost = MatterMostLogger(token ="", url = "mattermost.sys.infodat.com",id="",password="")
 #harbor = HarborLogger("","")
 
 #gitlab.create_user(email= 'user_test@exxpress.ma',user_name='user_test',name='user test',password='Agadir414$')
