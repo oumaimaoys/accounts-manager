@@ -1,12 +1,8 @@
 from typing import Any, Optional
-from django.contrib import admin, messages
-from django.db.models.fields import Field
-from django.db.models.fields.related import ForeignKey, ManyToManyField
+from django.contrib import admin
 from django.forms.fields import TypedChoiceField
-from django.forms.models import ModelChoiceField, ModelMultipleChoiceField
-from django.http.request import HttpRequest
-from django.http.response import HttpResponse
-from .models import User, Platform, Account, UserForm, AccountForm
+from .models import User, Platform, Account
+from .forms import UserForm, AccountForm
 from  django.utils.html import format_html
 from django.db.models  import Subquery
 
@@ -49,9 +45,7 @@ class PlatformAdmin(admin.ModelAdmin):
 
     def delete_button(self, obj):
         return format_html('<a class="btn" href="/admin/passwordManager/platform/{}/delete/">Delete</a>', obj.id)
-    
-
-         
+            
 
 class AccountAdmin(admin.ModelAdmin):
     list_display =  ["id","platform", "user","status","delete_button"]
@@ -79,7 +73,9 @@ class AccountAdmin(admin.ModelAdmin):
             if existing_user_ids.count() == Platform_count:
                 kwargs['queryset'] = User.objects.exclude(pk__in=Subquery(existing_user_ids))
         return super().formfield_for_choice_field(db_field, request, **kwargs)
-    
+    def get_form(self, request: Any, obj: Any | None = ..., change: bool = ..., **kwargs: Any) -> Any:
+        
+        return super().get_form(request, obj, change, **kwargs)
 
     
     

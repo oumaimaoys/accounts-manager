@@ -1,18 +1,16 @@
-{% extends "\venv\Lib\site-packages\django\contrib\admin\templates\admin\auth\user\add_form.html" %}
+{% extends "admin/change_form.html" %}
+{% load i18n %}
 
 {% block content %}
-    <form method='post' class="main_form">
-        {% csrf_token %}
-        <fieldset class="user">
-            {{form.user}}
-        </fieldset>
-        <fieldset class="platforms">
-            {{form.platforms}}
-        </fieldset>
-        <fieldset class="extra">
-            <input type="text"class ="input" value="eee">
-        </fieldset>
-    </form>
-<script src="{% static 'js/add_view.js' %}"></script>
+    {{ block.super }}
+<script src="{% static 'js/add_view.js' %}">
+    
+    $(document).ready(function(){
+        var userField = document.getElementById("id_user")
+        var platforms_field = document.getElementById("id_platforms")
+    
+        
+    })
+</script>
 
 {% endblock %}
