@@ -17,10 +17,12 @@ class User(models.Model):
         return "Agadir414$"
 
     def create_user(self, first_name, last_name):
-        new_password = self.generate_password(20)
-        hashed_password  = self.hash_pasword(new_password)
+        new_password = self.generate_password()
         user_name = first_name + "." + last_name
-        return {"password":hashed_password, "user_name":user_name}
+        return {"password":new_password, "user_name":user_name}
+    
+    def validate_credentials(self):
+        pass
     
 
 class Platform(models.Model):
@@ -36,7 +38,8 @@ class Platform(models.Model):
 class Account(models.Model):
     platform = models.ForeignKey(Platform, on_delete=models.PROTECT)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
-    status = models.BooleanField(default=True)
+    status = models.BooleanField(default=True) #active or deactivated
+    # id of user on that plattform
 
     def account_already_exists(self, u, p):
         return Account.objects.filter(user=u, platform=p).exists()

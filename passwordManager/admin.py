@@ -50,6 +50,7 @@ class PlatformAdmin(admin.ModelAdmin):
 class AccountAdmin(admin.ModelAdmin):
     list_display =  ["id","platform", "user","status","delete_button"]
     form = AccountForm
+    add_form_template = 'admin/account/add_form.html'
 
     def change_button(self, obj):
         return format_html('<a class="btn" href="/admin/passwordManager/account/{}/change/">Change</a>', obj.id)
@@ -73,9 +74,10 @@ class AccountAdmin(admin.ModelAdmin):
             if existing_user_ids.count() == Platform_count:
                 kwargs['queryset'] = User.objects.exclude(pk__in=Subquery(existing_user_ids))
         return super().formfield_for_choice_field(db_field, request, **kwargs)
-    def get_form(self, request: Any, obj: Any | None = ..., change: bool = ..., **kwargs: Any) -> Any:
-        
-        return super().get_form(request, obj, change, **kwargs)
+    
+    def render_change_form(self, request: Any, context: Any, add: bool = ..., change: bool = ..., form_url: str = ..., obj: Any | None = ...) -> Any:
+        context["platformCount"] = Platform.objects.all().count()
+        return super().render_change_form(request, context, add, change, form_url, obj)
 
     
     

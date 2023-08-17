@@ -16,10 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from passwordManager.views import AccountFormView
+
 urlpatterns = [
     path("passwordManager/", include("passwordManager.urls")),
     path('admin/', admin.site.urls),
-    path('admin/passwordManager/account/add/', AccountFormView.as_view(), name='add_account'),
     path("__debug__/", include("debug_toolbar.urls")),
 ]

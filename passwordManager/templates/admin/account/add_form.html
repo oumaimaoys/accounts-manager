@@ -1,0 +1,43 @@
+{% extends "admin/change_form.html" %}
+
+
+{% block content %}
+    {{ block.super }}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            var userField = document.getElementById("id_user");
+            var platformField = document.getElementById("id_platforms");
+            const platformId = "id_platforms_";
+            var platformNumber = {{platformCount}};
+
+            platformField.style.display = "none";
+
+            userField.addEventListener('change', function() {
+                if (userField.value !== ""){
+                    let platforms_with_acc = [];   
+                    if (length(platforms_with_acc)===0){
+                        platformField.style.display = "none";
+                        window.alert("user selected already has active accounts on all platforms");
+                    }
+                    else{
+                        platformField.style.display = "block";
+                        let platformOption ;
+                        for( let i = 0 ; i < platformNumber ;i++){
+                            platformOption = document.getElementById(platformId + i);
+                            if( platformOption.value in platforms_with_acc ){
+                                platformOption.style.display ="none";
+                            }
+                        }      
+                    }
+                }
+                else {
+                    platformField.style.display = "none";
+                    window.alert("please select a user");
+                }
+            });
+            
+        });
+    </script>
+{% endblock %}
