@@ -39,8 +39,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'debug_toolbar',
-    'dajaxice',
-    'dajax',
 ]
 
 MIDDLEWARE = [
@@ -125,9 +123,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/dev/howto/static-files/
 
 STATIC_URL = 'static/'
-
-
-STATICFILES_DIRS = [BASE_DIR, 'passwordManager/static']
 
 
 # Default primary key field type

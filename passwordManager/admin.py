@@ -1,6 +1,8 @@
-from typing import Any, Optional
+from typing import Any, Dict, Optional, Sequence, Type
 from django.contrib import admin
+from django.contrib.admin.views.main import ChangeList
 from django.forms.fields import TypedChoiceField
+from django.http.request import HttpRequest
 from .models import User, Platform, Account
 from .forms import UserForm, AccountForm
 from  django.utils.html import format_html
@@ -66,7 +68,7 @@ class AccountAdmin(admin.ModelAdmin):
                 Account.objects.create( platform= p ,user= user)
             form.instance.platform = platforms[len(platforms)-1]  
         return super().save_form(request, form, change)
-    
+    """
     def formfield_for_foreignkey(self, db_field, request, **kwargs) -> TypedChoiceField:
         if db_field.name == 'user':  
             Platform_count = Platform.objects.all().count()
@@ -74,7 +76,7 @@ class AccountAdmin(admin.ModelAdmin):
             if existing_user_ids.count() == Platform_count:
                 kwargs['queryset'] = User.objects.exclude(pk__in=Subquery(existing_user_ids))
         return super().formfield_for_choice_field(db_field, request, **kwargs)
-    
+    """
     def render_change_form(self, request: Any, context: Any, add: bool = ..., change: bool = ..., form_url: str = ..., obj: Any | None = ...) -> Any:
         context["platformCount"] = Platform.objects.all().count()
         return super().render_change_form(request, context, add, change, form_url, obj)

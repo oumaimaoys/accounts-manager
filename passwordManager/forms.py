@@ -13,16 +13,8 @@ class UserForm(ModelForm):
 
 class AccountForm(ModelForm):
     platforms = forms.ModelMultipleChoiceField(widget=forms.CheckboxSelectMultiple(), queryset=Platform.objects.all())
-    #select_all_checkbox = forms.BooleanField(required = False,label = 'Select all platforms')
-
     class Meta:
         model = Account
-        fields = '__all__'
+        fields = ["user","platforms"]
         exclude = ["status"]
         widgets = {'platform' : forms.HiddenInput()}
-
-    def select_all_platforms(): # this might get done in js instead
-        pass
-
-    def clean_all_platforms():
-        pass
