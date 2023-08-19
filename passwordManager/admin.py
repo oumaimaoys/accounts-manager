@@ -1,12 +1,10 @@
-from typing import Any, Dict, Optional, Sequence, Type
+from typing import Any
 from django.contrib import admin
-from django.contrib.admin.views.main import ChangeList
-from django.forms.fields import TypedChoiceField
 from django.http.request import HttpRequest
 from .models import User, Platform, Account
-from .forms import UserForm, AccountForm
+from .forms import UserForm, AccountForm, PlatformForm
 from  django.utils.html import format_html
-from django.db.models  import Subquery
+
 
 
 # Register your models here.
@@ -36,6 +34,7 @@ class UserAdmin(admin.ModelAdmin):
 class PlatformAdmin(admin.ModelAdmin):
     list_display =  ["id","platform_name", "platform_link", "accounts_created_on_platform","token","instance_url","change_button","delete_button"]
     search_fields = ["platform_name__startswith"]
+    form = PlatformForm
 
     def accounts_created_on_platform(self,platform_id):
         return Account.objects.filter(platform=platform_id).count()
@@ -68,20 +67,20 @@ class AccountAdmin(admin.ModelAdmin):
                 Account.objects.create( platform= p ,user= user)
             form.instance.platform = platforms[len(platforms)-1]  
         return super().save_form(request, form, change)
-    """
-    def formfield_for_foreignkey(self, db_field, request, **kwargs) -> TypedChoiceField:
-        if db_field.name == 'user':  
-            Platform_count = Platform.objects.all().count()
-            existing_user_ids = Account.objects.values_list('user')
-            if existing_user_ids.count() == Platform_count:
-                kwargs['queryset'] = User.objects.exclude(pk__in=Subquery(existing_user_ids))
-        return super().formfield_for_choice_field(db_field, request, **kwargs)
-    """
+
     def render_change_form(self, request: Any, context: Any, add: bool = ..., change: bool = ..., form_url: str = ..., obj: Any | None = ...) -> Any:
         context["platformCount"] = Platform.objects.all().count()
         return super().render_change_form(request, context, add, change, form_url, obj)
-
     
+    def delete_model(self, request: HttpRequest, obj: Any) -> None:
+        obj.status = False
+        obj.save()
+        user = User.objects.get(pk = 14)
+        platform = Platform.objects.get(pk = 10)
+        obj = Account.objects.create(platform = platform, user = user)
+        return super().delete_model(request, obj)
+
+        
     
 admin.site.register(User, UserAdmin)
 admin.site.register(Platform, PlatformAdmin)

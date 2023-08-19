@@ -30,6 +30,8 @@ class Platform(models.Model):
     platform_link = models.URLField(max_length=200)
     instance_url = models.URLField(max_length=200, default = None, blank=True )
     token = models.CharField(max_length=250, default=None, blank=True)
+    #api_login_username = models.CharField(max_length=250, default=None, blank=True)
+    #api_login_password = models.CharField(max_length=250, default="None")
 
     def __str__(self) -> str:
         return "{}".format(self.platform_name)
