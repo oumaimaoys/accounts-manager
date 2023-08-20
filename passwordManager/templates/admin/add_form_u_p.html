@@ -1,0 +1,18 @@
+{% extends "admin/change_form.html" %}
+
+ {% block content %} 
+    {{ block.super }}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        const submit = document.getElementsByClassName("default")[0];
+        submit.addEventListener('click', function(event){
+            const result = window.confirm("are you sure you want to add this user?");
+            if (!result) {
+                event.preventDefault();
+
+            }
+        });
+    });
+    </script>
+{% endblock %}

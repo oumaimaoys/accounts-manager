@@ -20,7 +20,7 @@
                 if (userField.value !== ""){
                     $.ajax({
                         type: "GET",
-                        url: '{% url 'fetch_platforms' %}',  // Replace with your URL
+                        url: '{% url 'add_account_view' %}',  // Replace with your URL
                         data: {
                             user_id: userField.value
                         },
@@ -88,6 +88,15 @@
                     if (platformOption.style.display !=="none"){
                         platformOption.checked = isChecked;
                     }
+                }
+            });
+
+            const submit = document.getElementsByClassName("default")[0];
+            submit.addEventListener('click', function(event){
+                const result = window.confirm("are you sure you want to add this user?");
+                if (!result) {
+                    event.preventDefault();
+
                 }
             });
 

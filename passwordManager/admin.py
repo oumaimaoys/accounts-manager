@@ -12,6 +12,7 @@ class UserAdmin(admin.ModelAdmin):
     list_display =  ["id","first_name", "last_name","user_name", "change_button","delete_button"]
     search_fields = ["first_name__startswith", "last_name__startswith"]
     form = UserForm
+    add_form_template = 'admin/add_form_u_p.html'
     
     def save_form(self, request, form, change):
         user = form.save(commit=False)  # Get the User object from the form without saving it yet.
@@ -35,6 +36,7 @@ class PlatformAdmin(admin.ModelAdmin):
     list_display =  ["id","platform_name", "platform_link", "accounts_created_on_platform","token","instance_url","change_button","delete_button"]
     search_fields = ["platform_name__startswith"]
     form = PlatformForm
+    add_form_template = 'admin/add_form_u_p.html'
 
     def accounts_created_on_platform(self,platform_id):
         return Account.objects.filter(platform=platform_id).count()
@@ -52,6 +54,7 @@ class AccountAdmin(admin.ModelAdmin):
     list_display =  ["id","platform", "user","status","delete_button"]
     form = AccountForm
     add_form_template = 'admin/account/add_form.html'
+    change_list_template = 'admin/account/change_list.html'
 
     def change_button(self, obj):
         return format_html('<a class="btn" href="/admin/passwordManager/account/{}/change/">Change</a>', obj.id)
