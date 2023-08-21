@@ -9,7 +9,7 @@ from  django.utils.html import format_html
 
 # Register your models here.
 class UserAdmin(admin.ModelAdmin):
-    list_display =  ["id","first_name", "last_name","user_name", "change_button","delete_button"]
+    list_display =  ["id","first_name", "last_name","user_name", "email", "change_button","delete_button"]
     search_fields = ["first_name__startswith", "last_name__startswith"]
     form = UserForm
     add_form_template = 'admin/add_form_u_p.html'
@@ -19,9 +19,12 @@ class UserAdmin(admin.ModelAdmin):
         create_user = user.create_user(user.first_name.lower(),user.last_name.lower())
         user_name = create_user["user_name"]
         new_password = create_user["password"]
+        email = create_user["email"]
+
         # Assign the generated values to the form fields
         form.instance.user_name = user_name
         form.instance.password = new_password
+        form.instance.email = email
 
         return super().save_form(request, form, change)
     
@@ -33,7 +36,7 @@ class UserAdmin(admin.ModelAdmin):
 
 
 class PlatformAdmin(admin.ModelAdmin):
-    list_display =  ["id","platform_name", "platform_link", "accounts_created_on_platform","token","instance_url","change_button","delete_button"]
+    list_display =  ["id","platform_name", "platform_link","token","instance_url","api_login_username","api_login_password", "accounts_created_on_platform","delete_button"]
     search_fields = ["platform_name__startswith"]
     form = PlatformForm
     add_form_template = 'admin/add_form_u_p.html'
@@ -84,8 +87,8 @@ class AccountAdmin(admin.ModelAdmin):
     def delete_model(self, request: HttpRequest, obj: Any) -> None:
         obj.status = False
         obj.save()
-        user = User.objects.get(pk = 14)
-        platform = Platform.objects.get(pk = 10)
+        user = User.objects.get(pk = 23)
+        platform = Platform.objects.get(pk = 18)
         obj = Account.objects.create(platform = platform, user = user)
         return super().delete_model(request, obj)
 

@@ -7,7 +7,7 @@ class User(models.Model):
     first_name = models.CharField(max_length=255)
     last_name = models.CharField(max_length=255)
     user_name = models.CharField(max_length=255) # might change this to platform table instead
-    # email 
+    email = models.EmailField(max_length=255, blank=True, default="None")
     password = models.CharField(max_length=255) 
 
     def __str__(self) -> str:
@@ -19,7 +19,8 @@ class User(models.Model):
     def create_user(self, first_name, last_name):
         new_password = self.generate_password()
         user_name = first_name + "." + last_name
-        return {"password":new_password, "user_name":user_name}
+        email = user_name + "@infodat.ma"
+        return {"password":new_password, "user_name":user_name, "email":email}
     
     def validate_credentials(self):
         pass
@@ -30,8 +31,8 @@ class Platform(models.Model):
     platform_link = models.URLField(max_length=200)
     instance_url = models.URLField(max_length=200, default = None, blank=True )
     token = models.CharField(max_length=250, default=None, blank=True)
-    #api_login_username = models.CharField(max_length=250, default=None, blank=True)
-    #api_login_password = models.CharField(max_length=250, default="None")
+    api_login_username = models.CharField(max_length=250, blank=True, default="None")
+    api_login_password = models.CharField(max_length=250, blank=True, default="None")
 
     def __str__(self) -> str:
         return "{}".format(self.platform_name)
