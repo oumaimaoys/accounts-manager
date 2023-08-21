@@ -22,7 +22,8 @@ class User(models.Model):
         email = user_name + "@infodat.ma"
         return {"password":new_password, "user_name":user_name, "email":email}
     
-    def validate_credentials(self):
+    def validate_credentials(self): 
+        # the instance url must not end with /
         pass
     
 

@@ -1,5 +1,4 @@
 import gitlab
-import subprocess
 import requests
 
 # an abstract class that has abstract methods for an abstract platform
@@ -59,15 +58,15 @@ class MatterMostLogger(Logger):
 
     def create_user(self, email, user_name, password):
         super()
-        url = "https://mattermost.sys.infodat.com/api/v4/users"
+        url = self.platform_api_url
         headers = {
-            "Authorization": "Bearer 74yg6ftb13dgfbbaq88y8kdk6c",
+            "Authorization": "Bearer "+ self.platform_api_token,
             "Content-Type": "application/json"
         }
         data = {
-            "username": "newuser3",
-            "password": "Agadir414$",
-            "email": "newuser3@example.com"
+            "username": user_name,
+            "password": password,
+            "email": email
         }
         response = requests.post(url, headers=headers, json=data)
         try:
@@ -75,15 +74,15 @@ class MatterMostLogger(Logger):
         except:
             return response.content
     
-    def remove_user(self,id):
-        url = "https://mattermost.sys.infodat.com/api/v4/users/jqdfyuqozidm5n1oyqc6jbh3ba/active"
+    def remove_user(self,id, status): #status = boolean
+        url = self.platform_api_url + '/' + id +"/active"
         headers = {
-            "Authorization": "Bearer 74yg6ftb13dgfbbaq88y8kdk6c",
+            "Authorization": "Bearer "+ self.platform_api_token,
             "Content-Type": "application/json"
         }
 
         data = {
-                "active":  False
+                "active":  status
                 }
 
         try:
@@ -93,9 +92,9 @@ class MatterMostLogger(Logger):
             return response.content
     
     def get_users(self):
-        url = "https://mattermost.sys.infodat.com/api/v4/users"
+        url = self.platform_api_url
         headers = {
-            "Authorization": "Bearer 74yg6ftb13dgfbbaq88y8kdk6c",
+            "Authorization": "Bearer "+ self.platform_api_token,
             "Content-Type": "application/json"
         }
         data ={}
@@ -122,17 +121,17 @@ class HarborLogger(Logger):
    
 
     def create_user(self,email, user_name, name, password):
-        url = "https://harbor.conacom.net/api/v2.0/users"
-        username = "sadik.sajid"
-        password = "Liefero414$$"
+        url = self.platform_api_url
+        username = self.login_id
+        password = self.password
         headers = {
             "Content-Type": "application/json"
         }
         data ={
-            "username": "test_user12",
-            "email": "test_user12e@gmail.com", 
-            "password": "Agadir414$", 
-            "realname": "test User", 
+            "username": user_name,
+            "email": email, 
+            "password": password, 
+            "realname": name, 
         }
         try:
             response = requests.post(url, headers=headers,auth=(username, password), json=data)
@@ -140,10 +139,10 @@ class HarborLogger(Logger):
         except:
             return response.content 
 
-    def remove_user(self):
-        url = "https://harbor.conacom.net/api/v2.0/users/11"
-        username = "sadik.sajid"
-        password = "Liefero414$$"
+    def remove_user(self, id):
+        url = self.platform_api_url +"/"+ id
+        username = self.login_id
+        password = self.password
 
         headers = {
             "Content-Type": "application/json"
@@ -156,9 +155,9 @@ class HarborLogger(Logger):
             return response.content 
 
     def get_users(self):
-        url = "https://harbor.conacom.net/api/v2.0/users"
-        username = "sadik.sajid"
-        password = "Liefero414$$"
+        url = self.platform_api_url
+        username = self.login_id
+        password = self.password
 
         headers = {
             "Content-Type": "application/json"
@@ -169,18 +168,3 @@ class HarborLogger(Logger):
             return response.content
         except:
             return response.content 
-
-# for testing   : delete later
-gitlab = GitlabLogger(token = "uPSVENLpMwJdC3sRLfJN",url = 'http://gitlab.sys.infodat.com', id="", password="")
-mattermost = MatterMostLogger(token ="gkk", url = "mattermost.sys.infodat.com",id="kgkgk",password="kkgk")
-harbor = HarborLogger(token ="", url = "",id="",password="")
-
-#gitlab.create_user(email= 'user_test@exxpress.ma',user_name='user_test',name='user test',password='Agadir414$')
-#print(mattermost.remove_user(id=""))
-#print(mattermost.get_users())
-#print(mattermost.create_user(email= 'user_test@exxpress.ma',user_name='user_test',password='Agadir414$'))
-#print(gitlab.get_users())
-#print(harbor.create_user(email= '',user_name='',password='', name=""))
-print(harbor.remove_user())
-print(harbor.get_users())
-
