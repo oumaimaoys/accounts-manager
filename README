@@ -1,26 +1,26 @@
 ```mermaid
-    classDiagram
-        class User {
-            +first_name: string
-            +last_name: string
-            +user_name: string
-            +email: string
-            +password: string
-        }
+classDiagram
+    class User {
+        +first_name: string
+        +last_name: string
+        +user_name: string
+        +email: string
+        +password: string
+    }
 
-        class Platform {
-            +platform_name: string
-            +platform_link: string
-            +instance_url: string
-            +token: string
-            +api_login_username: string
-            +api_login_password: string
-        }
+    class Platform {
+        +platform_name: string
+        +platform_link: string
+        +instance_url: string
+        +token: string
+        +api_login_username: string
+        +api_login_password: string
+    }
 
-        class Account {
-            +status: boolean
-        }
+    class Account {
+        +status: boolean
+    }
 
-        User "1" *-- "0..*" Account : has
-        Platform "1" *-- "0..*" Account : is used by
+    User "1" *-- "0..*" Account : has
+    Platform "1" *-- "0..*" Account : is used by
 ```
