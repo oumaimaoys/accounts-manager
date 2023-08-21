@@ -24,5 +24,4 @@ class AccountForm(ModelForm):
     class Meta:
         model = Account
         fields = ["user","platforms"]
-        exclude = ["status"]
-        widgets = {'platform' : forms.HiddenInput()}
+        widgets = {'platform' : forms.HiddenInput(), 'status' : forms.HiddenInput()}

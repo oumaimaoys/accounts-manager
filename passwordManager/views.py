@@ -13,10 +13,11 @@ def fetch_platform_with_existing_accounts(request):
     return JsonResponse(data)
 
 def change_status(request):
-    account_id = int(request.Get.get('account_id'))
-    old_status = request.Get.get('current_status')
+   
+    account_id = int(request.GET.get('account_id'))
+    old_status = request.GET.get('current_status')
     account = Account.objects.get(pk=account_id)
-    
+
     if old_status == "True":
         account.status = False
         new_status = "False"
@@ -25,7 +26,6 @@ def change_status(request):
         new_status = "True"
 
     account.save()
-
 
     data = {"new_status": new_status}
     return JsonResponse(data)

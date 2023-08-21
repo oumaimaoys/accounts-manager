@@ -1,0 +1,79 @@
+{% extends "admin/change_form.html" %}
+
+
+{% block content %}
+<div id="content-main">
+    <ul class="object-tools">
+        <li>
+            <a href="/admin/passwordManager/account/306/history/" class="historylink">History</a>
+        </li>
+    </ul>
+  
+  <form method="post" id="account_form" novalidate=""><input type="hidden" name="csrfmiddlewaretoken" value="E7kg0z89a4dukmr0hKs2m5Qj5KH8IY7QghYlqcpIJ5mZrQPBXxgfTY6DN6Wd20Om">
+  <div>
+    <fieldset class="module aligned ">
+        <div class="form-row field-user">
+            <div>
+                <div class="flex-container">
+                    <label class="required" for="id_user">User:</label>
+                    <div class="related-widget-wrapper" data-model-ref="user">
+                        <select name="user" required="" id="id_user">
+                            <option value="{{current_account.user.pk}}" selected disabled="true">{{current_account.user}}</option>
+                        </select>
+                    </div>   
+                </div>    
+            </div>     
+        </div>
+      
+        <div class="form-row field-platforms">
+            <div>
+                <div class="flex-container">
+                    <label class="required">Platform:</label>            
+                    <div id="id_platforms">
+                        <div>
+                            <label for="id_platforms_0"><input type="checkbox" name="platforms" value="{{current_account.platform.pk}}" id="id_platforms_0" checked disabled="true">{{current_account.platform}}</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-row field-status">
+            <div class="flex-container">
+                <label class="required">status:</label>
+                <div id="id_status">
+                    <div>
+                        <label for="id_status"><input type="checkbox" name="status" value="{{current_account.status}}" id="id-status">active</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </fieldset>
+<div class="submit-row">
+    <input type="submit" value="Save" class="default" name="_save">
+    <a href="/admin/passwordManager/account/306/delete/" class="deletelink">Delete</a>
+</div>
+<script id="django-admin-form-add-constants" src="/static/admin/js/change_form.js" async=""></script>
+<script id="django-admin-prepopulated-fields-constants" src="/static/admin/js/prepopulate_init.js" data-prepopulated-fields="[]"></script>
+
+</div>
+</form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const status = document.getElementById('id-status');
+        if(status.value==="True"){
+            status.checked = true;
+        }
+        else{
+            status.checked=false;
+        }
+        
+    })
+    // the save button action
+    
+</script>
+
+
+{% endblock %}

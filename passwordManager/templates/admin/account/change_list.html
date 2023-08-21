@@ -4,12 +4,23 @@
     {{ block.super }}
     <style>
         .toggle_status {
-            background: none;
-            border: none;
+            display: inline-block;
+            width: 30px;
+            height:15px;
             padding: 0;
             margin: 0;
             cursor: pointer;
+            background: lightgrey;
+            border-radius: 20px;
+            overflow:hidden;
         }
+        .toggle_status img{
+            vertical-align:baseline;
+            height:15px;
+            transition: 0.3s; 
+            
+        }
+
 
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
@@ -21,32 +32,38 @@
         const tableStatus = document.getElementsByClassName("field-status");
         const tableId = document.getElementsByClassName("field-id");
 
+        // we are turning the original status into a clickable link
         for (let i = 0; i < lenTableImg; i++) {
             const newLink = document.createElement("a");
             newLink.className = "toggle_status";
             newLink.appendChild(tableImg[i]);
             tableStatus[i].appendChild(newLink);
         }
-
+        
+        // to each status link, we have the change status funtion below
         const tableStatusToggle = document.getElementsByClassName("toggle_status");
         for (let i = 0; i < lenTableImg; i++) {
             tableStatusToggle[i].addEventListener("click", function() {
-                const current_status = tableImg[i].alt;
-                const account_id = tableId[i].querySelector("a").textContent;
-                $.ajax({
-                    type: "GET",
-                    url: '{% url 'acc_change_list_view' %}',  
-                    data: {
-                        current_status : current_status,
-                        account_id : account_id
-                        
-                    },
-                    success: function(response) {
-                        const new_status = response.new_status;
-                        tableImg[i].alt = new_status;
-                        console.log("change success");
-                    }
-                });
+                const confirmation = window.confirm("are you sure you want to change account status?");
+                if (confirmation){
+                    const current_status = tableImg[i].alt;
+                    const account_id = tableId[i].querySelector("a").textContent;
+                    $.ajax({
+                        type: "GET",
+                        url: '{% url 'acc_change_list_view' %}',  
+                        data: {
+                            current_status : current_status,
+                            account_id : account_id
+                            
+                        },
+                        success: function(response) {
+                            const new_status = response.new_status;
+                            tableImg[i].alt = new_status;
+                            location.reload();
+                        }
+                    });
+                }
+        
             });
         }
     });

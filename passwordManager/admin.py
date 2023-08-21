@@ -54,6 +54,7 @@ class AccountAdmin(admin.ModelAdmin):
     list_display =  ["id","platform", "user","status","delete_button"]
     form = AccountForm
     add_form_template = 'admin/account/add_form.html'
+    change_form_template ='admin/account/change_form.html'
     change_list_template = 'admin/account/change_list.html'
 
     def change_button(self, obj):
@@ -70,9 +71,14 @@ class AccountAdmin(admin.ModelAdmin):
                 Account.objects.create( platform= p ,user= user)
             form.instance.platform = platforms[len(platforms)-1]  
         return super().save_form(request, form, change)
+    
+    
 
     def render_change_form(self, request: Any, context: Any, add: bool = ..., change: bool = ..., form_url: str = ..., obj: Any | None = ...) -> Any:
         context["platformCount"] = Platform.objects.all().count()
+        context["current_account"] = obj
+        if obj != None :
+            context["user_id"]= obj.user.pk
         return super().render_change_form(request, context, add, change, form_url, obj)
     
     def delete_model(self, request: HttpRequest, obj: Any) -> None:
