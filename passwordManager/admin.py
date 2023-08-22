@@ -9,7 +9,7 @@ from  django.utils.html import format_html
 
 # Register your models here.
 class UserAdmin(admin.ModelAdmin):
-    list_display =  ["id","first_name", "last_name","user_name", "email", "change_button","delete_button"]
+    list_display =  ["id","first_name", "last_name","user_name", "email","delete_button"]
     search_fields = ["first_name__startswith", "last_name__startswith"]
     form = UserForm
     add_form_template = 'admin/add_form_u_p.html'
@@ -27,9 +27,6 @@ class UserAdmin(admin.ModelAdmin):
         form.instance.email = email
 
         return super().save_form(request, form, change)
-    
-    def change_button(self, obj):
-        return format_html('<center><a class="btn" href="/admin/passwordManager/user/{}/change/">Change</a></center>', obj.id)
 
     def delete_button(self, obj):
         return format_html('<center><a class="btn" href="/admin/passwordManager/user/{}/delete/">Delete</a></center>', obj.id)
@@ -44,7 +41,7 @@ class PlatformAdmin(admin.ModelAdmin):
     def accounts_created_on_platform(self,platform_id):
         return Account.objects.filter(platform=platform_id).count()
     
-    accounts_created_on_platform.short_description = "accounts"
+    accounts_created_on_platform.short_description = "accounts created on"
 
     def change_button(self, obj):
         return format_html('<a class="btn" href="/admin/passwordManager/platform/{}/change/">Change</a>', obj.id)
@@ -75,8 +72,6 @@ class AccountAdmin(admin.ModelAdmin):
             form.instance.platform = platforms[len(platforms)-1]  
         return super().save_form(request, form, change)
     
-    
-
     def render_change_form(self, request: Any, context: Any, add: bool = ..., change: bool = ..., form_url: str = ..., obj: Any | None = ...) -> Any:
         context["platformCount"] = Platform.objects.all().count()
         context["current_account"] = obj

@@ -1,5 +1,6 @@
 import gitlab
 import requests
+from bmc import *
 
 # an abstract class that has abstract methods for an abstract platform
 
@@ -10,9 +11,35 @@ class Logger(): #an abstract logger
         self.login_id = id
         self.password = password
 
-    def create_user(self,email, user_name, name, password):
-        #here we validate the data
-        pass
+    def make_request(self, method, endpoint, data):
+        headers = {
+            "Content-Type": "application/json"
+        }
+        if self.platform_api_token != "":
+            headers["Authorization"] =  "Bearer " + self.platform_api_token
+            auth= None
+        else :
+            auth= (self.login_id, self.password)
+        
+        url = self.platform_api_url + endpoint
+        
+        try:
+            if method == 'get':
+                response = requests.get(url, headers=headers, json=data, auth=auth)
+            elif method == 'post':
+                response = requests.post(url, headers=headers, json=data, auth=auth)
+            elif method == 'put':
+                response = requests.put(url, headers=headers, json=data, auth=auth)
+            elif method == 'delete':
+                response = requests.delete(url, headers=headers, json=data, auth=auth)
+            else:
+                raise ValueError("Invalid HTTP method")
+
+            response.raise_for_status()  
+            return response.content
+        except requests.exceptions.RequestException as e:
+            print(f"Error: {e}")
+            return None
 
 
 class GitlabLogger(Logger):
@@ -20,7 +47,6 @@ class GitlabLogger(Logger):
         super().__init__(token, url, id , password)
         self.gl = gitlab.Gitlab(url=self.platform_api_url, private_token=self.platform_api_token)
 
-    # create account
     def create_user(self, email, user_name, name, password):
         user_data = {'email': email, 'username': user_name, 'name': name,'password':password}
         try:
@@ -44,127 +70,79 @@ class GitlabLogger(Logger):
     def view_users(self):
         return self.gl.users.list(get_all=True)
     
-    def get_token_expiration_date(self):
-        access_tokens = self.gl.personal_access_tokens.list()
-        #for token in access_tokens:
-            #if token.token == self.platform_api_token:
-                #return access_tokens[1].expires_at
-        return(access_tokens[2])
-
 
 class MatterMostLogger(Logger):
     def __init__(self,token, url, id, password):
         super().__init__(token, url, id, password)
 
     def create_user(self, email, user_name, password):
-        super()
-        url = self.platform_api_url
-        headers = {
-            "Authorization": "Bearer "+ self.platform_api_token,
-            "Content-Type": "application/json"
-        }
         data = {
             "username": user_name,
             "password": password,
             "email": email
         }
-        response = requests.post(url, headers=headers, json=data)
-        try:
-            return response.content
-        except:
-            return response.content
+        return self.make_request(method="post",endpoint="", data=data )
     
     def remove_user(self,id, status): #status = boolean
-        url = self.platform_api_url + '/' + id +"/active"
-        headers = {
-            "Authorization": "Bearer "+ self.platform_api_token,
-            "Content-Type": "application/json"
-        }
+        endpoint = '/' + id +"/active"
+        data = { "active":  status}
 
-        data = {
-                "active":  status
-                }
-
-        try:
-            response = requests.put(url, headers=headers, json=data)
-            return response.content
-        except:
-            return response.content
+        return self.make_request(method="put", endpoint=endpoint, data= data)
     
     def get_users(self):
-        url = self.platform_api_url
-        headers = {
-            "Authorization": "Bearer "+ self.platform_api_token,
-            "Content-Type": "application/json"
-        }
-        data ={}
-        try:
-            response = requests.get(url, headers=headers, json=data)
-            return response.content
-        except:
-            return response.content
+        return self.make_request(method="get", endpoint="", data= {})
 
 class MinioLogger(Logger):
     def __init__(self,token, url, id, password) -> None:
         super().__init__(token, url, id, password)
+        self.r = config_host_add(
+                alias='infodat',
+                url=self.platform_api_url,
+                username=self.login_id,
+                password= self.password,
+                )
 
-    def create_user(self):
-        pass
-    def remove_user(self):
-        pass
-    def get_users(self):
+
+    def create_user(self, email, user_name, password, name):
+        user = admin_user_add(target='infodat', username=user_name, password=password)
+        return user.content
+
         
-        pass
+    def disable_user(self, user_name):
+        user = admin_user_disable(target='infodat', username=user_name)
+        return user.content
+    
+    def enable_user(self, user_name):
+        user = admin_user_enable(target='infodat', username=user_name)
+        return user.content
+        
+    def get_users(self):
+        users = admin_user_list(target='infodat')
+        return users.content
+
+
 class HarborLogger(Logger):
     def __init__(self,token, url, id, password) -> None:
         super().__init__(token, url, id, password)
    
 
     def create_user(self,email, user_name, name, password):
-        url = self.platform_api_url
-        username = self.login_id
-        password = self.password
-        headers = {
-            "Content-Type": "application/json"
-        }
         data ={
             "username": user_name,
             "email": email, 
             "password": password, 
             "realname": name, 
         }
-        try:
-            response = requests.post(url, headers=headers,auth=(username, password), json=data)
-            return response.content
-        except:
-            return response.content 
+        return self.make_request(method="post",endpoint="", data=data )
 
     def remove_user(self, id):
-        url = self.platform_api_url +"/"+ id
-        username = self.login_id
-        password = self.password
-
-        headers = {
-            "Content-Type": "application/json"
-        }
-        data ={}
-        try:
-            response = requests.delete(url, headers=headers,auth=(username, password), json=data)
-            return response.content
-        except:
-            return response.content 
+        endpoint = "/"+ id
+        return self.make_request(method="delete",endpoint=endpoint, data={} )
 
     def get_users(self):
-        url = self.platform_api_url
-        username = self.login_id
-        password = self.password
+        return self.make_request(method="get", endpoint="", data={})
 
-        headers = {
-            "Content-Type": "application/json"
-        }
-        data ={}
-        try:
-            response = requests.get(url, headers=headers,auth=(username, password), json=data)
-            return response.content
-        except:
-            return response.content 
+"""
+minio = MinioLogger(token="", url="https://minio-s3.sys.infodat.com", id="GwmN8IbR2PCq1pDJ", password="VvHVl2UuQ8JKYE5LKs50gzqnfFVvMH3o")
+#print(minio.create_user(email="",user_name="new_user23",password="Agadir414$",name=""))
+print(minio.disable_user(user_name="new_user23"))"""

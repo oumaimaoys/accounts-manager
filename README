@@ -1,3 +1,4 @@
+
 ```mermaid
 classDiagram
     class User {
@@ -24,3 +25,4 @@ classDiagram
     User "1" *-- "0..*" Account : has
     Platform "1" *-- "0..*" Account : is used by
 ```
+<a src="https://mermaid-js.github.io/mermaid-live-editor/edit#pako:eNqVUk1rwzAM_SvGx64t3dW3wX7AYOxmCKqttia2HPzBKCX_fWqWNdCQwHyS9Z7Ee5Ju0kSLUkkhjIec3x2cEwRNYnxDVnxlTOI2Ze_v5eRSLg1BQCVySY7OTwQuXcUrd13DMYDzC1jHsr5jsnO41_Qs_8NDOcUUZha6EVhT8eB4R-0Cx1EuQAabmpYEl9giLWDQucbHs6PmPpIVLRPxX_7fjImVysw-iy41K3GM0SPQQo9h-Vq-aik2ux1Hh_1-w5-_rkpcIE_0x7BXS1wW7NWK45Ur5VYGTLxty5c4iNSyXDCglopDC6nVUlPPPKglfl7JSFVSxa2snYWC49n-JvsfWdXTcQ">view diagram</a>
