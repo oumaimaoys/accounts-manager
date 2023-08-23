@@ -4,7 +4,8 @@ from .views import *
 
 urlpatterns = [
     path('admin/passwordManager/account/add/', fetch_platform_with_existing_accounts, name="add_account_view"),
-    path('admin/passwordManager/account/', change_status, name="acc_change_list_view"),
+    path('admin/passwordManager/account/', change_status, name="acc_change"),
+    path('admin/passwordManager/account/<int:pk>/change', change_status, name="acc_change"),
 ]
 
 admin.site.site_header  =  "Credentials Manager"  

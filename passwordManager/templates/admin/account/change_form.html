@@ -70,9 +70,31 @@
             status.checked=false;
         }
         
-    })
-    // the save button action
     
+        // the save button action
+        const saveButton = document.getElementsByClassName("default")[0];
+        saveButton.AddEventListener("click", function(){
+            const confirmation = window.confirm("are you sure you want to change account status?");
+            if (confirmation){
+                const current_status = status.value;
+                const current_id= {{ current_account.pk }};
+                $.ajax({
+                    type: "GET",
+                    url: '{% url 'acc_change' %}',  
+                    data: {
+                        current_status : current_status,
+                        account_id : account_id
+                        
+                    },
+                    success: function(response) {
+                        const new_status = response.new_status;
+                        status.value = new_status;
+                        window.location.href = "/admin/passwordManager/account/";
+                    }
+                });
+            }
+        })
+    })
 </script>
 
 

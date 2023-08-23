@@ -38,6 +38,13 @@
             newLink.className = "toggle_status";
             newLink.appendChild(tableImg[i]);
             tableStatus[i].appendChild(newLink);
+            if (tableImg[i].alt === "True"){
+                tableImg[i].style.marginLeft:"0";
+            }
+            else{
+                tableImg[i].style.marginLeft:"15px";
+            }
+           
         }
         
         // to each status link, we have the change status funtion below
@@ -59,6 +66,13 @@
                         success: function(response) {
                             const new_status = response.new_status;
                             tableImg[i].alt = new_status;
+                            if (tableImg[i].style.marginLeft === 0){
+                                tableImg[i].style.margin-left : "15px";
+                            }
+                            else{
+                                tableImg[i].style.margin-left : "0";
+                            }
+
                             location.reload();
                         }
                     });

@@ -82,11 +82,12 @@ class AccountAdmin(admin.ModelAdmin):
         return super().render_change_form(request, context, add, change, form_url, obj)
     
     def delete_model(self, request: HttpRequest, obj: Any) -> None:
-        obj.status = False
-        obj.save()
-        user = User.objects.get(pk = 23)
-        platform = Platform.objects.get(pk = 18)
-        obj = Account.objects.create(platform = platform, user = user)
+        if Account.deactivate_account(obj,obj.platform, obj.user) != False:
+            obj.status = False
+            obj.save()
+            user = User.objects.get(pk = 23)
+            platform = Platform.objects.get(pk = 18)
+            obj = Account.objects.create(platform = platform, user = user)
         return super().delete_model(request, obj)
 
         

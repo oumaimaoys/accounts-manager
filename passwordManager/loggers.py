@@ -1,7 +1,7 @@
 import gitlab
 import requests
 from bmc import *
-import datetime as dt
+import json
 
 # an abstract class that has abstract methods for an abstract platform
 
@@ -36,10 +36,9 @@ class Logger(): #an abstract logger
             else:
                 raise ValueError("Invalid HTTP method")
 
-            response.raise_for_status()  
             return response.content
         except requests.exceptions.RequestException as e:
-            print(f"Error: {e}")
+            print(f"Error: request to api failed {e}")
             return None
 
 
@@ -77,7 +76,7 @@ class GitlabLogger(Logger):
     def update_user(self):
         pass
 
-    def view_users(self):
+    def get_users(self):
         return self.gl.users.list(get_all=True)
     
 
@@ -99,11 +98,20 @@ class MatterMostLogger(Logger):
     def block_user(self,id,user_name): #status = boolean
         endpoint = '/' + str(id) +"/active"
         data = { "active":  False}
-
-        return self.make_request(method="put", endpoint=endpoint, data= data)
-    def delete_user(self, id):
-        pass
+        return self.make_request(method="put", endpoint=endpoint, data= data)      
     
+    def delete_user(self,id,user_name): #permanent delete
+        endpoint = '/' + str(id) 
+        data = { "active":  False, "permanent":True}
+        return self.make_request(method="delete", endpoint=endpoint, data= data)
+    
+    def get_user_id(self, user_name):
+        endpoint = "/usernames"
+        data = [user_name]
+        user_data = self.make_request(method="post", endpoint=endpoint, data= data)
+        user_decoded = json.loads(user_data.decode())
+        return user_decoded[0]["id"]
+
     def get_users(self):
         return self.make_request(method="get", endpoint="", data= {})
 
@@ -169,26 +177,27 @@ class HarborLogger(Logger):
 
 
 minio = MinioLogger(token="", url="https://minio-s3.sys.infodat.com", id="GwmN8IbR2PCq1pDJ", password="VvHVl2UuQ8JKYE5LKs50gzqnfFVvMH3o")
-#print(minio.create_user(email="",user_name="new_user23",password="Agadir414$",name=""))
-#print(minio.disable_user(user_name="new_user23"))
-#print(minio.remove_user("new_user23"))
-#print(minio.get_users())
-
 g = GitlabLogger(token="uPSVENLpMwJdC3sRLfJN", url="http://gitlab.sys.infodat.com", id="", password="")
 m = MatterMostLogger(token="74yg6ftb13dgfbbaq88y8kdk6c", url="https://mattermost.sys.infodat.com/api/v4/users", id="", password="")
 h = HarborLogger(token="", url="https://harbor.conacom.net/api/v2.0/users", id="sadik.sajid", password="Liefero414$$")
 
 #print(g.create_user(email="new.user@infodat.ma",user_name="new.user", name="new user", password="passwordtemp123"))
 #user = g.gl.users.get(27)
-#user.confirmed_at = str(dt.date.today())
-#user.save()
-
-
-
 #print(g.gl.users.delete(id=30))
-#print(m.get_users())
+
+
+
+
+#print(m.create_user(email="test.user123@infodat.ma",user_name="test_user13",password="Agadir414$",name=""))
+#print(m.get_user_id("test_user13"))
+#print(m.delete_user(id="beqymt45mtn1zp4zoipk8i1kue",user_name=""))
 #m.block_user(id="4y3wshgmptdz3r4hzjrsryk3uy",user_name="")
 
 #print(h.block_user(id=13, user_name=""))
 #print(h.get_users())
 
+
+#print(minio.create_user(email="",user_name="new_user23",password="Agadir414$",name=""))
+#print(minio.disable_user(user_name="new_user23"))
+#print(minio.remove_user("new_user23"))
+#print(minio.get_users())
