@@ -51,7 +51,7 @@ class PlatformAdmin(admin.ModelAdmin):
             
 
 class AccountAdmin(admin.ModelAdmin):
-    list_display =  ["id","platform", "user","status","delete_button"]
+    list_display =  ["id","platform", "user","user_id_on_platform","status","delete_button"]
     form = AccountForm
     add_form_template = 'admin/account/add_form.html'
     change_form_template ='admin/account/change_form.html'
@@ -69,7 +69,9 @@ class AccountAdmin(admin.ModelAdmin):
         if platforms:
             for p in platforms[:len(platforms)-1]:
                 Account.objects.create( platform= p ,user= user)
+                Account.create_account(platform=p, user=user)
             form.instance.platform = platforms[len(platforms)-1]  
+            Account.create_account(platform=platforms[len(platforms)-1] , user=user)
         return super().save_form(request, form, change)
     
     def render_change_form(self, request: Any, context: Any, add: bool = ..., change: bool = ..., form_url: str = ..., obj: Any | None = ...) -> Any:
