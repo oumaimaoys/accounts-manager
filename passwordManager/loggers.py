@@ -12,7 +12,7 @@ class Logger(): #an abstract logger
         self.login_id = id
         self.password = password
 
-    def make_request(self, method, endpoint, data):
+    def make_request(self, method, endpoint, data, params):
         headers = {
             "Content-Type": "application/json"
         }
@@ -26,7 +26,7 @@ class Logger(): #an abstract logger
         
         try:
             if method == 'get':
-                response = requests.get(url, headers=headers, json=data, auth=auth)
+                response = requests.get(url, headers=headers, json=data, auth=auth, params=params)
             elif method == 'post':
                 response = requests.post(url, headers=headers, json=data, auth=auth)
             elif method == 'put':
@@ -48,7 +48,7 @@ class GitlabLogger(Logger):
         self.gl = gitlab.Gitlab(url=self.platform_api_url, private_token=self.platform_api_token)
 
     def create_user(self, email, user_name, name, password):
-        user_data = {'email': email, 'username': user_name, 'name': name,'password':password}
+        user_data = {'email': email, 'username': user_name, 'name': name,'password':password, 'skip_confirmation': True}
         try:
             user = self.gl.users.create(user_data) 
             return user
@@ -64,7 +64,7 @@ class GitlabLogger(Logger):
             raise ValueError
         user.block()
 
-    def unblock_user(self, user_id, user_name): # blocking them
+    def enable_user(self, user_id, user_name): # unblocking them
         if user_id:
             user = self.gl.users.get(user_id) # by id       
         elif user_name:
@@ -72,9 +72,11 @@ class GitlabLogger(Logger):
         else:
             raise ValueError
         user.unblock()
+        
 
-    def update_user(self):
-        pass
+    def get_user_id(self,user_name):
+        user = self.gl.users.list(username=user_name)[0]
+        return user.id
 
     def get_users(self):
         return self.gl.users.list(get_all=True)
@@ -91,29 +93,35 @@ class MatterMostLogger(Logger):
             "email": email
         }
         try: 
-            return self.make_request(method="post",endpoint="", data=data )
+            return self.make_request(method="post",endpoint="", data=data, params={} )
         except Exception as e:
             print(f"user failed to be created: {e}")
     
     def block_user(self,id,user_name): #status = boolean
         endpoint = '/' + str(id) +"/active"
         data = { "active":  False}
-        return self.make_request(method="put", endpoint=endpoint, data= data)      
+        return self.make_request(method="put", endpoint=endpoint, data= data, params={} )  
+
+    def enable_user(self, id, user_name):
+        endpoint = '/' + str(id) +"/active"
+        data = { "active":  True}
+        return self.make_request(method="put", endpoint=endpoint, data= data, params={} )  
+
     
     def delete_user(self,id,user_name): #permanent delete
         endpoint = '/' + str(id) 
         data = { "active":  False, "permanent":True}
-        return self.make_request(method="delete", endpoint=endpoint, data= data)
+        return self.make_request(method="delete", endpoint=endpoint, data= data, params={} )
     
     def get_user_id(self, user_name):
         endpoint = "/usernames"
         data = [user_name]
-        user_data = self.make_request(method="post", endpoint=endpoint, data= data)
+        user_data = self.make_request(method="post", endpoint=endpoint, data= data, params={} )
         user_decoded = json.loads(user_data.decode())
         return user_decoded[0]["id"]
 
     def get_users(self):
-        return self.make_request(method="get", endpoint="", data= {})
+        return self.make_request(method="get", endpoint="", data= {}, params={} )
 
 class MinioLogger(Logger):
     def __init__(self,token, url, id, password) -> None:
@@ -142,9 +150,12 @@ class MinioLogger(Logger):
         user = admin_user_enable(target='infodat', username=user_name)
         return user.content
         
-    def remove_user(self, user_name):
+    def remove_user(self, user_name): #permanently  
         user = admin_user_remove(target="infodat",username=user_name)
         return user.content
+    
+    def get_user_id(self, user_name):
+        return "000"
     
     def get_users(self):
         users = admin_user_list(target='infodat')
@@ -164,16 +175,27 @@ class HarborLogger(Logger):
             "realname": name, 
         }
         try:
-            return self.make_request(method="post",endpoint="", data=data )
+            return self.make_request(method="post",endpoint="", data=data , params={} )
         except Exception as e:
             print(f"user failed to be created: {e}")
 
     def block_user(self, id, user_name): #removes it but not permanently
         endpoint = "/"+ str(id)
-        return self.make_request(method="delete",endpoint=endpoint, data={} )
+        return self.make_request(method="delete",endpoint=endpoint, data={}, params={} )
+    
+    def enable_user(self, id, user_name):
+        return
+    
+    def get_user_id(self, user_name):
+        endpoint= "/search"
+        params =  {"username": user_name}
+        user_data = self.make_request(method="get", endpoint=endpoint, data={}, params=params )
+        user_decoded = json.loads(user_data.decode())
+        return user_decoded[0]["user_id"]
+
 
     def get_users(self):
-        return self.make_request(method="get", endpoint="", data={})
+        return self.make_request(method="get", endpoint="", data={}, params={} )
 
 
 minio = MinioLogger(token="", url="https://minio-s3.sys.infodat.com", id="GwmN8IbR2PCq1pDJ", password="VvHVl2UuQ8JKYE5LKs50gzqnfFVvMH3o")
@@ -181,12 +203,14 @@ g = GitlabLogger(token="uPSVENLpMwJdC3sRLfJN", url="http://gitlab.sys.infodat.co
 m = MatterMostLogger(token="74yg6ftb13dgfbbaq88y8kdk6c", url="https://mattermost.sys.infodat.com/api/v4/users", id="", password="")
 h = HarborLogger(token="", url="https://harbor.conacom.net/api/v2.0/users", id="sadik.sajid", password="Liefero414$$")
 
-#print(g.create_user(email="new.user@infodat.ma",user_name="new.user", name="new user", password="passwordtemp123"))
+#print(g.create_user(email="tesst.userr@infodat.ma",user_name="test.user", name="test userr", password="Agadir414$"))
 #user = g.gl.users.get(27)
-#print(g.gl.users.delete(id=30))
+#print(g.gl.users.delete(id=34))
+
+#print(g.get_users())
 
 
-
+#print(h.get_user_id(user_name="ayman.bouybri"))
 
 #print(m.create_user(email="test.user123@infodat.ma",user_name="test_user13",password="Agadir414$",name=""))
 #print(m.get_user_id("test_user13"))
@@ -194,10 +218,8 @@ h = HarborLogger(token="", url="https://harbor.conacom.net/api/v2.0/users", id="
 #m.block_user(id="4y3wshgmptdz3r4hzjrsryk3uy",user_name="")
 
 #print(h.block_user(id=13, user_name=""))
-#print(h.get_users())
+#print(minio.get_users())
 
-
-#print(minio.create_user(email="",user_name="new_user23",password="Agadir414$",name=""))
+#print(minio.create_user(email="",user_name="tesst.user",password="Agadir414$",name=""))
 #print(minio.disable_user(user_name="new_user23"))
 #print(minio.remove_user("new_user23"))
-#print(minio.get_users())

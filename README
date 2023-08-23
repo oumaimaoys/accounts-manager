@@ -1,3 +1,21 @@
+prerequisitions
+the os
+mc
+minio 
+python 11
+
+how to configure 
+cloning
+setting up venv
+requirements
+setting up database
+making migrations, migrating, 
+running server
+
+project logic
+models
+functionalities
+paltforms implemented
 
 ```mermaid
 classDiagram

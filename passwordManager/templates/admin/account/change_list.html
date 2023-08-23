@@ -20,8 +20,6 @@
             transition: 0.3s; 
             
         }
-
-
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -39,10 +37,10 @@
             newLink.appendChild(tableImg[i]);
             tableStatus[i].appendChild(newLink);
             if (tableImg[i].alt === "True"){
-                tableImg[i].style.marginLeft:"0";
+                tableImg[i].style.marginLeft ="0";
             }
             else{
-                tableImg[i].style.marginLeft:"15px";
+                tableImg[i].style.marginLeft ="15px";
             }
            
         }
@@ -57,7 +55,7 @@
                     const account_id = tableId[i].querySelector("a").textContent;
                     $.ajax({
                         type: "GET",
-                        url: '{% url 'acc_change_list_view' %}',  
+                        url: '{% url 'acc_change_on_list' %}',  
                         data: {
                             current_status : current_status,
                             account_id : account_id
@@ -67,10 +65,10 @@
                             const new_status = response.new_status;
                             tableImg[i].alt = new_status;
                             if (tableImg[i].style.marginLeft === 0){
-                                tableImg[i].style.margin-left : "15px";
+                                tableImg[i].style.marginLeft = "15px";
                             }
                             else{
-                                tableImg[i].style.margin-left : "0";
+                                tableImg[i].style.marginLeft = "0";
                             }
 
                             location.reload();

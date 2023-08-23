@@ -4,6 +4,8 @@ from django.http.request import HttpRequest
 from .models import User, Platform, Account
 from .forms import UserForm, AccountForm, PlatformForm
 from  django.utils.html import format_html
+from django.contrib import messages
+
 
 
 
@@ -31,12 +33,12 @@ class UserAdmin(admin.ModelAdmin):
     def delete_button(self, obj):
         return format_html('<center><a class="btn" href="/admin/passwordManager/user/{}/delete/">Delete</a></center>', obj.id)
 
-
 class PlatformAdmin(admin.ModelAdmin):
     list_display =  ["id","platform_name", "platform_link","token","instance_url","api_login_username","api_login_password", "accounts_created_on_platform","delete_button"]
     search_fields = ["platform_name__startswith"]
     form = PlatformForm
     add_form_template = 'admin/add_form_u_p.html'
+    
 
     def accounts_created_on_platform(self,platform_id):
         return Account.objects.filter(platform=platform_id).count()
@@ -48,10 +50,12 @@ class PlatformAdmin(admin.ModelAdmin):
 
     def delete_button(self, obj):
         return format_html('<a class="btn" href="/admin/passwordManager/platform/{}/delete/">Delete</a>', obj.id)
-            
+
 
 class AccountAdmin(admin.ModelAdmin):
-    list_display =  ["id","platform", "user","user_id_on_platform","status","delete_button"]
+    list_display =  ["id","platform", "user","user_id_on_platform","status"]
+    list_filter = ["platform","status"]
+    
     form = AccountForm
     add_form_template = 'admin/account/add_form.html'
     change_form_template ='admin/account/change_form.html'
@@ -66,12 +70,21 @@ class AccountAdmin(admin.ModelAdmin):
     def save_form(self, request: Any, form: Any, change: Any) -> Any:  
         platforms = form.cleaned_data['platforms']
         user = form.cleaned_data['user']
-        if platforms:
-            for p in platforms[:len(platforms)-1]:
-                Account.objects.create( platform= p ,user= user)
-                Account.create_account(platform=p, user=user)
-            form.instance.platform = platforms[len(platforms)-1]  
-            Account.create_account(platform=platforms[len(platforms)-1] , user=user)
+
+        for p in platforms[:len(platforms)-1]:
+            account_on_platform = Account.create_account(platform=p, user=user)
+            if account_on_platform is not False:
+                Account.objects.create( platform= p ,user= user, user_id_on_platform = Account.get_user_id(p, user))
+            else :
+                messages.error("account on {p} failed to be created")
+
+        p = platforms[len(platforms)-1] 
+        account_on_platform =  Account.create_account(platform=p, user=user)
+        if  account_on_platform is not False:
+            form.instance.platform = p
+            form.instance.user_id_on_platform = Account.get_user_id(p , user)
+        else :
+            messages.error("account on {p} failed to be created")
         return super().save_form(request, form, change)
     
     def render_change_form(self, request: Any, context: Any, add: bool = ..., change: bool = ..., form_url: str = ..., obj: Any | None = ...) -> Any:

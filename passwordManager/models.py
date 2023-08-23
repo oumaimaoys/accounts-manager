@@ -87,7 +87,7 @@ class Account(models.Model):
             raise forms.ValidationError("the platfrom", platform.platform_name ,"selected has no configured logger")
         
         try :
-            return logger.create_user(email=user.email, user_name=user.user_name, name=user.first_name + " "+user.last_name, password=user.password)
+            return logger.create_user(email=user.email, user_name=user.user_name, name=user.first_name +" "+user.last_name, password=user.password)
         except :
             return False
         
@@ -97,6 +97,23 @@ class Account(models.Model):
         elif platform.platform_name == 'mattermost':
             logger = MatterMostLogger(url=platform.instance_url, token = platform.token,id="", password="")
         elif platform.platform_name == 'harbor':
+            logger = HarborLogger(url=platform.instance_url, token = "", id = platform.api_login_username, password = platform.api_login_password)
+        elif platform.platform_name == 'minio':
+            logger = MinioLogger(url=platform.instance_url, token = "", id = platform.api_login_username, password = platform.api_login_password)
+        else :
+            raise forms.ValidationError("the platfrom", platform.platform_name ,"selected has no configured logger")
+        
+        try :
+            return logger.block_user(id=account.user_id_on_platform, user_name=user.user_name)
+        except :
+            return False
+    
+    def activate_account(account,platform, user):
+        if platform.platform_name == 'gitlab':
+            logger = GitlabLogger(url=platform.instance_url, token = platform.token, id="", password="")
+        elif platform.platform_name == 'mattermost':
+            logger = MatterMostLogger(url=platform.instance_url, token = platform.token,id="", password="")
+        elif platform.platform_name == 'harbor': # action imposible on harbor
             logger = HarborLogger(url=platform.instance_url, token = "", id = platform.api_login_username, password = platform.api_login_password)
         elif platform.platform_name == 'minio':
             logger = MinioLogger(url=platform.instance_url, token = "", id = platform.api_login_username, password = platform.api_login_password)
@@ -124,4 +141,20 @@ class Account(models.Model):
             return logger.get_users()
         except :
             return False
-   
+        
+    def get_user_id(platform ,user): # calls the right logger to create the account on the platform
+        if platform.platform_name == 'gitlab':
+            logger = GitlabLogger(url=platform.instance_url, token = platform.token, id="", password="")
+        elif platform.platform_name == 'mattermost':
+            logger = MatterMostLogger(url=platform.instance_url, token = platform.token,id="", password="")
+        elif platform.platform_name == 'harbor':
+            logger = HarborLogger(url=platform.instance_url, token = "", id = platform.api_login_username, password = platform.api_login_password)
+        elif platform.platform_name == 'minio':
+            logger = MinioLogger(url=platform.instance_url, token = "", id = platform.api_login_username, password = platform.api_login_password)
+        else :
+            raise forms.ValidationError("the platfrom", platform.platform_name ,"selected has no configured logger")
+        
+        try :
+            return logger.get_user_id(user_name=user.user_name)
+        except :
+            return None

@@ -16,6 +16,10 @@ def change_status(request):
     account_id = int(request.GET.get('account_id'))
     old_status = request.GET.get('current_status')
     account = Account.objects.get(pk=account_id)
+    platform = account.platform
+    user = account.user
+    user_id_on_platform = account.user_id_on_platform
+    
 
     if old_status == "True":
         account.status = False
