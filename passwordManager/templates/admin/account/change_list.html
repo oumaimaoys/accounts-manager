@@ -64,14 +64,16 @@
                         success: function(response) {
                             const new_status = response.new_status;
                             tableImg[i].alt = new_status;
-                            if (tableImg[i].style.marginLeft === 0){
+                            if (current_status !== new_status){
+                                if (tableImg[i].style.marginLeft === 0){
                                 tableImg[i].style.marginLeft = "15px";
+                                }
+                                else{
+                                    tableImg[i].style.marginLeft = "0";
+                                }
+                                location.reload();
                             }
-                            else{
-                                tableImg[i].style.marginLeft = "0";
-                            }
-
-                            location.reload();
+                            
                         }
                     });
                 }

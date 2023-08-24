@@ -121,7 +121,7 @@ class Account(models.Model):
             raise forms.ValidationError("the platfrom", platform.platform_name ,"selected has no configured logger")
         
         try :
-            return logger.block_user(id=account.user_id_on_platform, user_name=user.user_name)
+            return logger.unblock_user(id=account.user_id_on_platform, user_name=user.user_name)
         except :
             return False
     

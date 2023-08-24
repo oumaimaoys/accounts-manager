@@ -58,20 +58,16 @@ class GitlabLogger(Logger):
     def block_user(self, id, user_name): # blocking them
         if id:
             user = self.gl.users.get(id) # by id       
-        elif user_name:
-            user = self.gl.users.list(username=user_name)[0]
         else:
             raise ValueError
         user.block()
 
-    def enable_user(self, user_id, user_name): # unblocking them
-        if user_id:
-            user = self.gl.users.get(user_id) # by id       
-        elif user_name:
-            user = self.gl.users.list(username=user_name)[0]
+    def unblock_user(self, id, user_name): # unblocking them
+        if id:
+            user = self.gl.users.get(id) # by id       
         else:
             raise ValueError
-        user.unblock()
+        return (user.unblock())
         
 
     def get_user_id(self,user_name):
@@ -102,7 +98,7 @@ class MatterMostLogger(Logger):
         data = { "active":  False}
         return self.make_request(method="put", endpoint=endpoint, data= data, params={} )  
 
-    def enable_user(self, id, user_name):
+    def unblock_user(self, id, user_name):
         endpoint = '/' + str(id) +"/active"
         data = { "active":  True}
         return self.make_request(method="put", endpoint=endpoint, data= data, params={} )  
@@ -146,7 +142,7 @@ class MinioLogger(Logger):
         user = admin_user_disable(target='infodat', username=user_name)
         return user.content
     
-    def enable_user(self, user_name):
+    def unblock_user(self, id, user_name):
         user = admin_user_enable(target='infodat', username=user_name)
         return user.content
         
@@ -183,8 +179,8 @@ class HarborLogger(Logger):
         endpoint = "/"+ str(id)
         return self.make_request(method="delete",endpoint=endpoint, data={}, params={} )
     
-    def enable_user(self, id, user_name):
-        return
+    def unblock_user(self, id, user_name):
+        return False
     
     def get_user_id(self, user_name):
         endpoint= "/search"
@@ -208,6 +204,7 @@ h = HarborLogger(token="", url="https://harbor.conacom.net/api/v2.0/users", id="
 #print(g.gl.users.delete(id=34))
 
 #print(g.get_users())
+#print(g.gl.users.get(37).block())
 
 
 #print(h.get_user_id(user_name="ayman.bouybri"))
@@ -222,4 +219,4 @@ h = HarborLogger(token="", url="https://harbor.conacom.net/api/v2.0/users", id="
 
 #print(minio.create_user(email="",user_name="tesst.user",password="Agadir414$",name=""))
 #print(minio.disable_user(user_name="new_user23"))
-#print(minio.remove_user("new_user23"))
+#print(minio.remove_user("tesstt.user"))

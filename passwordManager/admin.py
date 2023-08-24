@@ -71,7 +71,7 @@ class AccountAdmin(admin.ModelAdmin):
         platforms = form.cleaned_data['platforms']
         user = form.cleaned_data['user']
 
-        for p in platforms[:len(platforms)-1]:
+        for p in platforms[:len(platforms)-1]: # negative indexing isn't supported so changing to [:-1] won't work
             account_on_platform = Account.create_account(platform=p, user=user)
             if account_on_platform is not False:
                 Account.objects.create( platform= p ,user= user, user_id_on_platform = Account.get_user_id(p, user))
@@ -108,3 +108,4 @@ class AccountAdmin(admin.ModelAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register(Platform, PlatformAdmin)
 admin.site.register(Account, AccountAdmin)
+admin.site.disable_action('delete_selected')

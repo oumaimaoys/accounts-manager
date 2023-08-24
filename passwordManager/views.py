@@ -18,16 +18,18 @@ def change_status(request):
     account = Account.objects.get(pk=account_id)
     platform = account.platform
     user = account.user
-    user_id_on_platform = account.user_id_on_platform
+    new_status = old_status
     
 
     if old_status == "True":
-        account.status = False
-        new_status = "False"
+        if Account.deactivate_account(account=account, platform=platform, user=user) is not False:
+            account.status = False
+            new_status = "False"
     else:
-        account.status = True
-        new_status = "True"
-
+        if Account.activate_account(account=account, platform=platform, user=user) is not False:
+            account.status = True
+            new_status = "True"
+    
     account.save()
 
     data = {"new_status": new_status}
