@@ -20,7 +20,7 @@ class User(models.Model):
     def create_user(self, first_name, last_name):
         new_password = self.generate_password()
         user_name = first_name + "." + last_name
-        email = user_name + "@infodat.ma"
+        email = user_name + "@infodat.com"
         return {"password":new_password, "user_name":user_name, "email":email}
     
     def clean(self) -> None:

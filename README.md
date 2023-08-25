@@ -16,7 +16,8 @@ users can efficiently create and delete accounts on different platforms without 
 
 ### Prerequisites 
 - python 3.10.x and above
-- mc and minio command line interfaces.
+- [mc](https://min.io/docs/minio/linux/reference/minio-mc.html#install-mc) and [minio](https://min.io/docs/minio/linux/index.html#quickstart-for-linux?ref=gh) command line interfaces.
+    
 - API keys or credentials for the platforms
 
 ### Installation 
