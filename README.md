@@ -7,14 +7,14 @@ users can efficiently create and delete accounts on different platforms without 
 ## Table of Contents
 - [Description](#Description)
 - [Getting Started](#getting-started)
-- [Prerequisites](#prerequisites)
-- [Installation](#installation)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
 - [Usage](#usage)
 
 
 ## Getting Started {#getting-started}
 
-### Prerequisites{#prerequisites}
+### Prerequisites {#prerequisites}
 - python 3.10.x and above
 - mc and minio command line interfaces.
 - API keys or credentials for the platforms
