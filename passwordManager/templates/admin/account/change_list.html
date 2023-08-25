@@ -29,8 +29,9 @@
         const lenTableImg = tableImg.length;
         const tableStatus = document.getElementsByClassName("field-status");
         const tableId = document.getElementsByClassName("field-id");
+        
 
-        // we are turning the original status into a clickable link
+        // we are turning the original status into a clickable link and removing href for change from id column
         for (let i = 0; i < lenTableImg; i++) {
             const newLink = document.createElement("a");
             newLink.className = "toggle_status";
@@ -42,6 +43,8 @@
             else{
                 tableImg[i].style.marginLeft ="15px";
             }
+
+            tableId[i].querySelector("a").removeAttribute("href");
            
         }
         

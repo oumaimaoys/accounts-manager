@@ -55,10 +55,10 @@ class PlatformAdmin(admin.ModelAdmin):
 class AccountAdmin(admin.ModelAdmin):
     list_display =  ["id","platform", "user","user_id_on_platform","status"]
     list_filter = ["platform","status"]
+
     
     form = AccountForm
     add_form_template = 'admin/account/add_form.html'
-    change_form_template ='admin/account/change_form.html'
     change_list_template = 'admin/account/change_list.html'
 
     def change_button(self, obj):
@@ -93,17 +93,7 @@ class AccountAdmin(admin.ModelAdmin):
         if obj != None :
             context["user_id"]= obj.user.pk
         return super().render_change_form(request, context, add, change, form_url, obj)
-    
-    def delete_model(self, request: HttpRequest, obj: Any) -> None:
-        if Account.deactivate_account(obj,obj.platform, obj.user) != False:
-            obj.status = False
-            obj.save()
-            user = User.objects.get(pk = 23)
-            platform = Platform.objects.get(pk = 18)
-            obj = Account.objects.create(platform = platform, user = user)
-        return super().delete_model(request, obj)
 
-        
     
 admin.site.register(User, UserAdmin)
 admin.site.register(Platform, PlatformAdmin)

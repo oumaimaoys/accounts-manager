@@ -10,7 +10,8 @@
     </ul>
   
   <form method="post" id="account_form" novalidate=""><input type="hidden" name="csrfmiddlewaretoken" value="E7kg0z89a4dukmr0hKs2m5Qj5KH8IY7QghYlqcpIJ5mZrQPBXxgfTY6DN6Wd20Om">
-  <div>
+    {% csrf_token %}
+    <div>
     <fieldset class="module aligned ">
         <div class="form-row field-user">
             <div>
@@ -49,7 +50,7 @@
         </div>
     </fieldset>
 <div class="submit-row">
-    <input type="submit" value="Save" class="default" name="_save">
+    <input type="submit" value="Save" class="default" data-acc-change-url="{% url 'acc_change' current_account.pk %}" name="_save">
     <a href="/admin/passwordManager/account/306/delete/" class="deletelink">Delete</a>
 </div>
 <script id="django-admin-form-add-constants" src="/static/admin/js/change_form.js" async=""></script>
@@ -58,43 +59,62 @@
 </div>
 </form>
 </div>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
     $(document).ready(function () {
         const status = document.getElementById('id-status');
+        let change = false;
+
         if(status.value==="True"){
             status.checked = true;
         }
         else{
-            status.checked=false;
+            status.checked = false;
         }
         
-    
-        // the save button action
-        const saveButton = document.getElementsByClassName("default")[0];
-        saveButton.AddEventListener("click", function(){
-            const confirmation = window.confirm("are you sure you want to change account status?");
-            if (confirmation){
-                const current_status = status.value;
-                const current_id= {{ current_account.pk }};
-                $.ajax({
-                    type: "GET",
-                    url: '{% url 'acc_change' %}',  
-                    data: {
-                        current_status : current_status,
-                        account_id : account_id
+        status.addEventListener("change", function(){// check if status changed
+            change = true;
+        });
+            // the save button action
+        const saveButton = document.querySelector(".default");
+        
+        saveButton.addEventListener("click", function(event){
+            event.preventDefault();
+            if (change===true){
+                const confirmation = window.confirm("are you sure you want to change account status?");
+                if (confirmation){
+                    const current_status = status.value;
+                    const current_id = {{ current_account.pk }};
+                    const accChangeUrl = saveButton.getAttribute("data-acc-change-url"); 
+                    $.ajax({
+                        type: "GET",
+                        url: accChangeUrl,  // the old status is the status before unchecking
+                        data: {
+                            current_status : current_status,
+                            account_id : current_id
+                            
+                        },
+                        success: function(response) {
+                            console.log("success");
+                            const new_status = response.new_status;
+                            status.value = new_status;
+                        }
                         
-                    },
-                    success: function(response) {
-                        const new_status = response.new_status;
-                        status.value = new_status;
-                        window.location.href = "/admin/passwordManager/account/";
-                    }
-                });
+
+                    });
+                    console.log("failure");
+
+                } else {
+                    console.log("Cancelled");
+                }
+            } else {
+                console.log("No change detected");
             }
-        })
-    })
+        });
+
+    
+    });
 </script>
 
 
