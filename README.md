@@ -1,6 +1,6 @@
 # Employees Accounts Manager 
 
-## Description {#Description}
+## Description [](#){name=Description}
 this app is a Django application designed to streamline user account management across various platforms through API requests. With this app,
 users can efficiently create and delete accounts on different platforms without having to navigate each platform's individual interface.
 
@@ -12,14 +12,14 @@ users can efficiently create and delete accounts on different platforms without 
 - [Usage](#usage)
 
 
-## Getting Started {#getting-started}
+## Getting Started [](#){name=getting-started}
 
-### Prerequisites {#prerequisites}
+### Prerequisites [](#){name=prerequisites}
 - python 3.10.x and above
 - mc and minio command line interfaces.
 - API keys or credentials for the platforms
 
-### Installation {#installation}
+### Installation [](#){name=installation}
 1. **Clone the Repository:**
 
    ```sh
@@ -54,7 +54,7 @@ users can efficiently create and delete accounts on different platforms without 
     ```sh
         python manage.py runserver
 
-## Usage {#usage}
+## Usage [](#){name=usage}
 ### Models
 ![model](assets/images/diagram.png)
 
