@@ -1,5 +1,4 @@
-from typing import Collection, Optional
-from django.db import models, IntegrityError
+from django.db import models
 from django import forms
 from .loggers import *
 

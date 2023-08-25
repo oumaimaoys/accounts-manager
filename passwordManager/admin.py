@@ -1,6 +1,5 @@
 from typing import Any
 from django.contrib import admin
-from django.http.request import HttpRequest
 from .models import User, Platform, Account
 from .forms import UserForm, AccountForm, PlatformForm
 from  django.utils.html import format_html
