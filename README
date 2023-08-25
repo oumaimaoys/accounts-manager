@@ -1,18 +1,18 @@
-<center><h1> Employees Accounts Manager </h1></center>
+# Employees Accounts Manager 
 
-<h2>Description:</h2>
+## Description:
 theis app is a Django application designed to streamline user account management across various platforms through API requests. With this app,
 users can efficiently create and delete accounts on different platforms without having to navigate each platform's individual interface.
 
-<h2>Table of Contents:</h2>
+## Table of Contents:
 
-<h2>Getting Started:</h2>
-<h3>Prerequisites</h3>
+## Getting Started:
+### Prerequisites
 the os
 mc
 minio 
 python 11
-<h3>Installation instructions:</h3>
+### Installation instructions:
 cloning
 setting up venv
 requirements
