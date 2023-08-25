@@ -1,16 +1,25 @@
-prerequisitions
+<center><h1> Employees Accounts Manager </h1></center>
+
+<h2>Description:</h2>
+theis app is a Django application designed to streamline user account management across various platforms through API requests. With this app,
+users can efficiently create and delete accounts on different platforms without having to navigate each platform's individual interface.
+
+<h2>Table of Contents:</h2>
+
+<h2>Getting Started:</h2>
+<h3>Prerequisites</h3>
 the os
 mc
 minio 
 python 11
-
-how to configure 
+<h3>Installation instructions:</h3>
 cloning
 setting up venv
 requirements
 setting up database
 making migrations, migrating, 
 running server
+
 
 project logic
 models
