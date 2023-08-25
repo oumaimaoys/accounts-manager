@@ -3,8 +3,6 @@ import requests
 from bmc import *
 import json
 
-# an abstract class that has abstract methods for an abstract platform
-
 class Logger(): #an abstract logger
     def __init__(self, token, url, id, password):
         self.platform_api_token = token
@@ -193,30 +191,3 @@ class HarborLogger(Logger):
     def get_users(self):
         return self.make_request(method="get", endpoint="", data={}, params={} )
 
-
-minio = MinioLogger(token="", url="https://minio-s3.sys.infodat.com", id="GwmN8IbR2PCq1pDJ", password="VvHVl2UuQ8JKYE5LKs50gzqnfFVvMH3o")
-g = GitlabLogger(token="uPSVENLpMwJdC3sRLfJN", url="http://gitlab.sys.infodat.com", id="", password="")
-m = MatterMostLogger(token="74yg6ftb13dgfbbaq88y8kdk6c", url="https://mattermost.sys.infodat.com/api/v4/users", id="", password="")
-h = HarborLogger(token="", url="https://harbor.conacom.net/api/v2.0/users", id="sadik.sajid", password="Liefero414$$")
-
-#print(g.create_user(email="tesst.userr@infodat.ma",user_name="test.user", name="test userr", password="Agadir414$"))
-#user = g.gl.users.get(27)
-#print(g.gl.users.delete(id=34))
-
-#print(g.get_users())
-#print(g.gl.users.get(37).block())
-
-
-#print(h.get_user_id(user_name="ayman.bouybri"))
-
-#print(m.create_user(email="test.user123@infodat.ma",user_name="test_user13",password="Agadir414$",name=""))
-#print(m.get_user_id("test_user13"))
-#print(m.delete_user(id="beqymt45mtn1zp4zoipk8i1kue",user_name=""))
-#m.block_user(id="4y3wshgmptdz3r4hzjrsryk3uy",user_name="")
-
-#print(h.block_user(id=13, user_name=""))
-#print(minio.get_users())
-
-#print(minio.create_user(email="",user_name="tesst.user",password="Agadir414$",name=""))
-#print(minio.disable_user(user_name="new_user23"))
-#print(minio.remove_user("tesstt.user"))
