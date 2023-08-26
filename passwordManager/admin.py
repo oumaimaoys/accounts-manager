@@ -54,18 +54,11 @@ class PlatformAdmin(admin.ModelAdmin):
 class AccountAdmin(admin.ModelAdmin):
     list_display =  ["id","platform", "user","user_id_on_platform","status"]
     list_filter = ["platform","status"]
-
-    
     form = AccountForm
     add_form_template = 'admin/account/add_form.html'
     change_list_template = 'admin/account/change_list.html'
-
-    def change_button(self, obj):
-        return format_html('<a class="btn" href="/admin/passwordManager/account/{}/change/">Change</a>', obj.id)
-
-    def delete_button(self, obj):
-        return format_html('<a class="btn" href="/admin/passwordManager/account/{}/delete/">Delete</a>', obj.id)
     
+
     def save_form(self, request: Any, form: Any, change: Any) -> Any:  
         platforms = form.cleaned_data['platforms']
         user = form.cleaned_data['user']
@@ -97,4 +90,4 @@ class AccountAdmin(admin.ModelAdmin):
 admin.site.register(User, UserAdmin)
 admin.site.register(Platform, PlatformAdmin)
 admin.site.register(Account, AccountAdmin)
-admin.site.disable_action('delete_selected')
+

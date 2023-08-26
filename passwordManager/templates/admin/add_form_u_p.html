@@ -5,6 +5,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
     $(document).ready(function () {
+        /*
+            displays confirm windows when saving new platform or user
+        */
         const submit = document.getElementsByClassName("default")[0];
         submit.addEventListener('click', function(event){
             const result = window.confirm("are you sure you want to save this entry?");

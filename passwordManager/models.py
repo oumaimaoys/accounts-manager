@@ -5,8 +5,8 @@ from .loggers import *
 
 # Create your models here.
 class User(models.Model):
-    first_name = models.CharField(max_length=255)
-    last_name = models.CharField(max_length=255)
+    first_name = models.CharField(max_length=255,blank=True)
+    last_name = models.CharField(max_length=255,blank=True)
     user_name = models.CharField(max_length=255, unique=True) # might change this to platform table instead
     email = models.EmailField(max_length=255, blank=True, default="None")
     password = models.CharField(max_length=255) 

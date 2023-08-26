@@ -15,12 +15,16 @@
 
             platformField.style.display = "none";
             
-
+            /*
+               The function below takes the user's selection and searches for the platforms on which they have accounts.
+               It then removes these platforms from the list of available platforms shown. 
+               If the user has accounts on all available platforms, a window alert will appear.
+            */
             userField.addEventListener('change', function() {
                 if (userField.value !== ""){
                     $.ajax({
                         type: "GET",
-                        url: '{% url 'add_account_view' %}',  // Replace with your URL
+                        url: '{% url 'add_account_view' %}', 
                         data: {
                             user_id: userField.value
                         },
@@ -64,9 +68,6 @@
             const labelText_1 = document.createTextNode(" De/Select all platforms");
             newLabel_1.appendChild(labelText_1);
             newDiv_1.appendChild(newLabel_1);
-            
-
-                      
             platformField.appendChild(newDiv_1);
 
             // styling the container and making a flew box

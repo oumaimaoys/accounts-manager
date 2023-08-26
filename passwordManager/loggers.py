@@ -3,13 +3,16 @@ import requests
 from bmc import *
 import json
 
-class Logger(): #an abstract logger
+class Logger():
+    """
+    Abstract logger class for platform-specific actions.
+    """
     def __init__(self, token, url, id, password):
-        self.platform_api_token = token
-        self.platform_api_url = url
-        self.login_id = id
-        self.password = password
-
+        self.platform_api_token = token # API token for authentication.
+        self.platform_api_url = url #APi base URL
+        self.login_id = id # Login ID for platforms that authenticate with admin credentials instead of token
+        self.password = password # password for platforms that authenticate with admin credentials instead of token
+        
     def make_request(self, method, endpoint, data, params):
         headers = {
             "Content-Type": "application/json"
@@ -73,8 +76,26 @@ class GitlabLogger(Logger):
         return user.id
 
     def get_users(self):
-        return self.gl.users.list(get_all=True)
-    
+        users = self.gl.users.list(get_all=True)
+        users_data = []
+        for user in users:
+            if user.state == "active":
+                state = True
+            else:
+                state = False
+
+            name = (user.name).split(' ', 1)
+            if len(name) == 2:
+                first_name = name[0]
+                last_name = name[1]
+            else :
+                first_name = name[0]
+                last_name = ""
+            
+            user_data = {"id":user.id, "username":user.username, "first name": first_name, "last name":last_name, "email":user.email, "status":state}
+            users_data.append(user_data)
+        return users_data
+
 
 class MatterMostLogger(Logger):
     def __init__(self,token, url, id, password):
@@ -115,8 +136,19 @@ class MatterMostLogger(Logger):
         return user_decoded[0]["id"]
 
     def get_users(self):
-        return self.make_request(method="get", endpoint="", data= {}, params={} )
+        users = self.make_request(method="get", endpoint="", data= {}, params={} )
+        users_decoded = json.loads(users.decode())
+        users_data = []
+        for user in users_decoded:
+            if user["delete_at"]==0:
+                state = True
+            else :
+                state = False
+            user = {"id":user["id"], "username":user["username"],"first name":user["first_name"],"last name":user["last_name"], "email":user["email"], "status":state}
+            users_data.append(user)
 
+        return users_data
+    
 class MinioLogger(Logger):
     def __init__(self,token, url, id, password) -> None:
         super().__init__(token, url, id, password)
@@ -152,8 +184,16 @@ class MinioLogger(Logger):
         return "000"
     
     def get_users(self):
-        users = admin_user_list(target='infodat')
-        return users.content
+        users = admin_user_list(target='infodat').content
+        users_data = []
+        for user in users:
+            if user["userStatus"] == 'enabled':
+                state = True
+            else:
+                state = False
+            user_data  = {"id":000, "username":user["accessKey"], "first name":"", "last name":"", "email":"", "status":state}
+            users_data.append(user_data)
+        return users_data
 
 
 class HarborLogger(Logger):
@@ -177,7 +217,7 @@ class HarborLogger(Logger):
         endpoint = "/"+ str(id)
         return self.make_request(method="delete",endpoint=endpoint, data={}, params={} )
     
-    def unblock_user(self, id, user_name):
+    def unblock_user(self, id, user_name): # action not possible in harbor api
         return False
     
     def get_user_id(self, user_name):
@@ -188,6 +228,23 @@ class HarborLogger(Logger):
         return user_decoded[0]["user_id"]
 
 
-    def get_users(self):
-        return self.make_request(method="get", endpoint="", data={}, params={} )
+    def get_users(self): 
+        """
+            return a list of users
+            each user : {"id", "username","first name","last name", "email", "status"}
+        """
+        users = self.make_request(method="get", endpoint="", data={}, params={} )
+        users_decoded = json.loads(users.decode())
+        users_data = []
+        for user in users_decoded:
+            name = (user["realname"]).split(' ', 1)
+            if len(name) == 2:
+                first_name = name[0]
+                last_name = name[1]
+            else :
+                first_name = name[0]
+                last_name = ""
+            user = {"id":user["user_id"], "username":user["username"],"first name":first_name,"last name":last_name, "email":user["email"], "status":True}
+            users_data.append(user)
+        return users_data
 
