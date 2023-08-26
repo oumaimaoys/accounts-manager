@@ -9,7 +9,7 @@ users can efficiently create and delete accounts on different platforms without 
 - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Installation](#installation)
-- [Project Structure](#usage)
+- [Project Structure](#project-structure)
     - [Models](#models)
     - [Views and Templates](#views-templates)
     - [API REFERENCES (Loggers)](#api-references-loggers)
@@ -58,10 +58,12 @@ users can efficiently create and delete accounts on different platforms without 
         python manage.py migrate
 
 6. **fetch existing accounts:**
-    run the following command to fetch existing accounts and add them to our database
+    run the following command to fetch existing accounts and add them to your database
 
     ```sh
         python manage.py fetch_accounts_script
+    ```
+    > note: consider running the server first, then input the platforms and the api informations (make sure the platforms match the ones already implemented in loggers.py and Account model in models.py) and then running the fetch command
 
 7. **run server:**
     ```sh
@@ -74,27 +76,31 @@ users can efficiently create and delete accounts on different platforms without 
 
 ### Views and Templates
 
-in the file views.pt
+in the folder /templates/admin/account
+- add_form.html : template for the account add page
+- change_list.html : template for accounts list display
+and in /templates/admin :
+- add_form_u_p.html: template for both platform and user add pages
 
 ### **API REFERENCES (Loggers)** 
 
 In the loggers.py file you will find four loggers, one for each platfrom:
-    - GitlabLogger 
+- **GitlabLogger** 
         this logger was built using the [python-gitlab](https://python-gitlab.readthedocs.io/en/stable/index.html) package 
-    - MattermostLogger
+ - **MattermostLogger**
         this logger was build using the python requests package to send directly requests to the [mattermost api](https://api.mattermost.com/#tag/introduction)
-    - MinioLogger
+- **MinioLogger**
         this logger was build using [bmc](https://big-mama-tech.gitlab.io/bmc/) package 
-    - HarborLogger
+- **HarborLogger**
         this logger was build using the python requests package to send directly requests to the [habror api](https://github.com/goharbor/harbor/blob/main/api/v2.0/swagger.yaml)
 
 
 Each of the Logger inherits a constructor and a make_request method from the parent class Logger, and in each logger you will find :
-    - create_user() 
-    - block_user()
-    - unblock_user()
-    - get_user_id()
-    - get_users()
+- *create_user()*
+- *block_user()*
+- *unblock_user()*
+- *get_user_id()*
+- *get_users()*
 
 
 
