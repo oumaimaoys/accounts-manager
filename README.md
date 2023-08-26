@@ -11,7 +11,7 @@ users can efficiently create and delete accounts on different platforms without 
     - [Installation](#installation)
 - [Project Structure](#project-structure)
     - [Models](#models)
-    - [Views and Templates](#views-templates)
+    - [Views and Templates](#views-and-templates)
     - [API REFERENCES (Loggers)](#api-references-loggers)
 
 
@@ -72,6 +72,8 @@ users can efficiently create and delete accounts on different platforms without 
 
 ## **Project Structure**
 ### Models
+These are the models that construct the database.
+
 ![model](assets/images/diagram.png)
 
 ### Views and Templates
@@ -87,13 +89,14 @@ and in /templates/admin :
 In the loggers.py file you will find four loggers, one for each platfrom:
 - **GitlabLogger** 
         this logger was built using the [python-gitlab](https://python-gitlab.readthedocs.io/en/stable/index.html) package 
- - **MattermostLogger**
-        this logger was build using the python requests package to send directly requests to the [mattermost api](https://api.mattermost.com/#tag/introduction)
+- **MattermostLogger**
+        this logger was build using the python requests package to send requests directly to the [mattermost api](https://api.mattermost.com/#tag/introduction)
 - **MinioLogger**
         this logger was build using [bmc](https://big-mama-tech.gitlab.io/bmc/) package 
 - **HarborLogger**
-        this logger was build using the python requests package to send directly requests to the [habror api](https://github.com/goharbor/harbor/blob/main/api/v2.0/swagger.yaml)
+        this logger was build using the python requests package to send requests  to the [habror api](https://github.com/goharbor/harbor/blob/main/api/v2.0/swagger.yaml)
 
+A logger is a class that contains methods that enables the admin to manage the users on the correspondant platform.
 
 Each of the Logger inherits a constructor and a make_request method from the parent class Logger, and in each logger you will find :
 - *create_user()*
@@ -101,6 +104,5 @@ Each of the Logger inherits a constructor and a make_request method from the par
 - *unblock_user()*
 - *get_user_id()*
 - *get_users()*
-
 
 

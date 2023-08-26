@@ -18,7 +18,8 @@ class UserAdmin(admin.ModelAdmin):
     def save_form(self, request, form, change):
         user = form.save(commit=False)  # Get the User object from the form without saving it yet.
         create_user = user.create_user(user.first_name.lower(),user.last_name.lower())
-        user_name = create_user["user_name"]
+        # calls the create_user from User model which generates a username, password and email
+        user_name = create_user["user_name"] 
         new_password = create_user["password"]
         email = create_user["email"]
 
@@ -69,7 +70,7 @@ class AccountAdmin(admin.ModelAdmin):
                 Account.objects.create( platform= p ,user= user, user_id_on_platform = Account.get_user_id(p, user))
             else :
                 messages.error("account on {p} failed to be created")
-
+        
         p = platforms[len(platforms)-1] 
         account_on_platform =  Account.create_account(platform=p, user=user)
         if  account_on_platform is not False:
