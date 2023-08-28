@@ -1,4 +1,4 @@
-# **Employees Accounts Manager**
+# **Employees Accounts Manager** 
 
 ## Description
 
@@ -7,15 +7,15 @@ users can efficiently create and delete accounts on different platforms without 
 
 ## Table of Contents
 
-    - [Description](#Description)
-    - [Getting Started](#getting-started)
-        - [Prerequisites](#prerequisites)
-        - [Installation](#installation)
-    - [Project Structure](#project-structure)
-        - [Models](#models)
-        - [Views and Templates](#views-and-templates)
-        - [API REFERENCES (Loggers)](#api-references-loggers)
-        - [Usage](#usage)
+- [Description](#Description)
+- [Getting Started](#getting-started)
+    - [Prerequisites](#prerequisites)
+    - [Installation](#installation)
+- [Project Structure](#project-structure)
+    - [Models](#models)
+    - [Views and Templates](#views-and-templates)
+    - [API REFERENCES (Loggers)](#api-references-loggers)
+    - [Usage](#usage)
 
 ## Getting Started
 
@@ -30,53 +30,57 @@ users can efficiently create and delete accounts on different platforms without 
 
 1. **Clone the Repository:**
 
-        ```sh
-            git clone http://gitlab.sys.infodat.com/oumaima.ouyassine/password_manager.git
-            cd password_manager
+   ```sh
+   git clone http://gitlab.sys.infodat.com/oumaima.ouyassine/password_manager.git
+   cd password_manager
 
 2. **set up venv**
 
 3. **install requirements**
 
-        ```sh
-            pip install -r requirements.txt
-        ```
+    ```sh
+    pip install -r requirements.txt
+    ```
     > note: linux users must install **psycopg2-binary** instead of **psycopg2**
 
 4. **configure database**
 
     Open the **settings.py** file in the password_manager Django project folder.
-        ```python
-            DATABASES = {
-            'default': {
-                'ENGINE': 'django.db.backends.sqlite3',  # Change to your desired database engine
-                'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-                # ... other settings
-            }
-        }```
+    ```python
+        DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',  # Change to your desired database engine
+            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+            # ... other settings
+        }
+    }
+    ```
 
     Replace 'ENGINE' and 'NAME' with your preferred database engine and settings.
 
 5. **create an admin account**
 
-        ```sh
-            python manage.py createsuperuser
+    ```sh
+        python manage.py createsuperuser
 
 6. **Run Migrations:**
 
-        ```sh
-            python manage.py migrate
+    ```sh
+        python manage.py migrate
 
 7. **fetch existing accounts:**
 
-    run the following command to fetch existing accounts and add them to your database 
-        ```sh
-            python manage.py fetch_accounts_script```
+    run the following command to fetch existing accounts and add them to your database
+
+    ```sh
+        python manage.py fetch_accounts_script
+    ```
+
     > note: consider running the server first, then input the platforms and the api informations (make sure the platforms match the ones already implemented in loggers.py and Account model in models.py) and then running the fetch command
 
 8. **run server:**
-        ```sh
-            python manage.py runserver
+    ```sh
+        python manage.py runserver
 
 ## **Project Structure**
 
