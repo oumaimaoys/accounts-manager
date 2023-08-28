@@ -13,48 +13,6 @@
             const platformNumber = {{platformCount}};
             var platformOption ;
 
-            platformField.style.display = "none";
-            
-            /*
-               The function below takes the user's selection and searches for the platforms on which they have accounts.
-               It then removes these platforms from the list of available platforms shown. 
-               If the user has accounts on all available platforms, a window alert will appear.
-            */
-            userField.addEventListener('change', function() {
-                if (userField.value !== ""){
-                    $.ajax({
-                        type: "GET",
-                        url: '{% url 'add_account_view' %}', 
-                        data: {
-                            user_id: userField.value
-                        },
-                        success: function(response) {
-                            let platforms_with_acc = response.platforms;
-                            const platforms_with_acc_Count = Object.keys(platforms_with_acc).length;
-                            if (platformNumber===platforms_with_acc_Count){
-                                platformField.style.display = "none";
-                                window.alert("user selected already has active accounts on all platforms");
-                            }
-                            else{
-                                platformField.style.display = "block";
-                                for( let i = 0 ; i < platformNumber ;i++){
-                                    platformOption = document.getElementById(platformId + i);
-                                    if( (Object.keys(platforms_with_acc)).includes(platformOption.value.toString())){
-                                        const div = (platformOption.parentNode).parentNode;
-                                        div.style.display='none';
-                                    }
-                                }     
-                            }
-                        }
-                    });
-                   
-                }
-                else {
-                    platformField.style.display = "none";
-                    window.alert("please select a user");
-                }
-            });
-
             // creating the select all checkcbox 
             const newLabel_1 = document.createElement("label");
             const newInput_1 = document.createElement("input");
@@ -92,6 +50,60 @@
                 }
             });
 
+            platformField.style.display = "none";
+            
+    
+            userField.addEventListener('change', function() {
+                // this look resets the option display from previous user selected
+                platformField.style.display = "none";
+                for( let i = 0 ; i < platformNumber ;i++){
+                    platformOption = document.getElementById(platformId + i);
+                    const div = (platformOption.parentNode).parentNode;
+                    div.style.display='block';
+                }
+                /*
+                    we chack if user selected is non null, then send request to database to retrieve what platfrom 
+                    they have accounts on and we subtracts these platfroms from the options given by changinf the style display
+
+                */  
+                if (userField.value !== ""){
+                    $.ajax({
+                        type: "GET",
+                        url: '{% url 'add_account_view' %}', 
+                        cache: false,
+                        data: {
+                            user_id: userField.value
+                        },
+                        success: function(response) {
+                            let platforms_with_acc = response.platforms;
+                            const platforms_with_acc_Count = Object.keys(platforms_with_acc).length;
+                            if (platformNumber===platforms_with_acc_Count){
+                                platformField.style.display = "none";
+                                window.alert("user selected already has active accounts on all platforms");
+                            }
+                            else{
+                                platformField.style.display = "block";
+                                for( let i = 0 ; i < platformNumber ;i++){
+                                    platformOption = document.getElementById(platformId + i);
+                                    if( (Object.keys(platforms_with_acc)).includes(platformOption.value.toString())){
+                                        const div = (platformOption.parentNode).parentNode;
+                                        div.style.display='none';
+                                    }
+                                }     
+                            }
+                        }
+                    });
+                   
+                }
+                else {
+                    platformField.style.display = "none";
+                    window.alert("please select a user");
+                    location.reload();
+                }
+            });
+
+
+            // what the save button triggers
             const submit = document.getElementsByClassName("default")[0];
             submit.addEventListener('click', function(event){
                 const result = window.confirm("are you sure you want to add this user?");

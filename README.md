@@ -13,6 +13,7 @@ users can efficiently create and delete accounts on different platforms without 
     - [Models](#models)
     - [Views and Templates](#views-and-templates)
     - [API REFERENCES (Loggers)](#api-references-loggers)
+    - [Usage](#usage)
 
 
 ## Getting Started 
@@ -53,11 +54,15 @@ users can efficiently create and delete accounts on different platforms without 
     ```
     Replace 'ENGINE' and 'NAME' with your preferred database engine and settings.
 
-5. **Run Migrations:**
+5. **create an admin account**
+    ```sh
+        python manage.py createsuperuser
+
+6. **Run Migrations:**
     ```sh
         python manage.py migrate
 
-6. **fetch existing accounts:**
+7. **fetch existing accounts:**
     run the following command to fetch existing accounts and add them to your database
 
     ```sh
@@ -65,7 +70,7 @@ users can efficiently create and delete accounts on different platforms without 
     ```
     > note: consider running the server first, then input the platforms and the api informations (make sure the platforms match the ones already implemented in loggers.py and Account model in models.py) and then running the fetch command
 
-7. **run server:**
+8. **run server:**
     ```sh
         python manage.py runserver
 
@@ -78,11 +83,20 @@ These are the models that construct the database.
 
 ### Views and Templates
 
-in the folder /templates/admin/account
-- add_form.html : template for the account add page
-- change_list.html : template for accounts list display
+1. templates :
+in the folder /templates/admin/account :
+- add_form.html : template for the account add page.
+- change_list.html : template for accounts list display.
+
 and in /templates/admin :
-- add_form_u_p.html: template for both platform and user add pages
+- add_form_u_p.html: template for both platform and user add pages.
+
+2. views :
+we have two views: 
+- fetch_platform_with_existing_accounts :this view is the one rendering the add form for accounts, it gets the platforms on which the selected user has an account and sends it back to the tempalate where they are subtracted from the platform options with which you can create new accounts.
+
+- change_status : this view is called in the accounts list display page, and in charge of changing the account status when the status toggle is triggers.
+
 
 ### **API REFERENCES (Loggers)** 
 
@@ -104,5 +118,23 @@ Each of the Logger inherits a constructor and a make_request method from the par
 - *unblock_user()*
 - *get_user_id()*
 - *get_users()*
+
+## **Usage**
+
+1. go to /admin and login using the superuser created earlier's credentials
+![login](assets/images/login.png)
+
+2. here we have access to all the models, click on add to add a new instance to the database
+![models](assets/images/models.png)
+
+3. click on add next to accounts to go to /admin/passwordManager/account/add/
+here you select a user or create a new one by clicking the + icon
+![addform](assets/images/addform.png)
+
+4. after selecting a user,you get a list of platforms on which this user has no accounts, you select the platforms and click save
+![user](assets/images/user.png)
+
+5. to change the account status (either activating or deactivating the account), you click the status toggle next to the account which wa want to change.
+![accounts](assets/images/listdisplay.png)
 
 
