@@ -65,7 +65,7 @@ class Platform(models.Model):
 
 
 class Account(models.Model):
-    platform = models.ForeignKey(Platform, on_delete=models.PROTECT)
+    platform = models.ForeignKey(Platform, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.PROTECT)
     status = models.BooleanField(default=True) #active or deactivated
     user_id_on_platform = models.CharField(max_length=250, default=None, blank=True)

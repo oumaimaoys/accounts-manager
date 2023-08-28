@@ -7,15 +7,18 @@ users can efficiently create and delete accounts on different platforms without 
 
 ## Table of Contents
 
-- [Description](#Description)
+- [Description](#description)
 - [Getting Started](#getting-started)
-    - [Prerequisites](#prerequisites)
-    - [Installation](#installation)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
 - [Project Structure](#project-structure)
-    - [Models](#models)
-    - [Views and Templates](#views-and-templates)
-    - [API REFERENCES (Loggers)](#api-references-loggers)
-    - [Usage](#usage)
+  - [Models](#models)
+  - [Views and Templates](#views-and-templates)
+  - [API REFERENCES (Loggers)](#api-references-loggers)
+- [Usage](#usage)
+- [Functionalies to be added](#functionalies-to-be-added)
+
+---
 
 ## Getting Started
 
@@ -82,6 +85,8 @@ users can efficiently create and delete accounts on different platforms without 
     ```sh
         python manage.py runserver
 
+---
+
 ## **Project Structure**
 
 ### Models
@@ -129,6 +134,8 @@ Each of the Logger inherits a constructor and a make_request method from the par
 - *get_user_id()*
 - *get_users()*
 
+---
+
 ## **Usage**
 
 1. go to /admin and login using the superuser created earlier's credentials
@@ -146,3 +153,7 @@ here you select a user or create a new one by clicking the + icon
 
 5. to change the account status (either activating or deactivating the account), you click the status toggle next to the account which wa want to change.
 ![accounts](assets/images/listdisplay.png)
+
+## Functionalies to be added
+
+- [ ] add the option of deactivating all accounts all at once when deleting a user
