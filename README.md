@@ -34,7 +34,7 @@ users can efficiently create and delete accounts on different platforms without 
 1. **Clone the Repository:**
 
    ```sh
-   git clone http://gitlab.sys.infodat.com/oumaima.ouyassine/password_manager.git
+   git clone http://gitlab.sys.infodat.com/oumaima.ouyassine/accounts-manager.git
    cd password_manager
 
 2. **set up venv**
